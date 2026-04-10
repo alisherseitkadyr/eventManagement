@@ -1,0 +1,158 @@
+.page {
+  padding: 2rem 2.5rem;
+  max-width: 1100px;
+}
+
+.header {
+  margin-bottom: 1.75rem;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--warm-gray);
+  margin-top: 4px;
+}
+
+.topGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.messageBox {
+  background: var(--ivory);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 12px;
+}
+
+.shareButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.messengerBtn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.6rem 1rem;
+  border-radius: 100px;
+  border: none;
+  color: white;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 200ms;
+}
+
+.messengerBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.whatsapp { background: #25D366; }
+.telegram { background: #0088cc; }
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--sand-light);
+}
+
+.statLabel {
+  font-size: 13.5px;
+  color: var(--charcoal-soft);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.linksHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.linksList {
+  display: grid;
+  gap: 8px;
+}
+
+.linkRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.6rem 0.75rem;
+  background: var(--ivory);
+  border-radius: 10px;
+  transition: background 200ms;
+}
+
+.linkRow:hover {
+  background: var(--sand-light);
+}
+
+.linkInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.linkName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--charcoal);
+}
+
+.linkUrl {
+  font-size: 11px;
+  color: var(--warm-gray);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.copyBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  background: var(--gold-faint);
+  color: var(--burgundy);
+  transition: all 200ms;
+  white-space: nowrap;
+}
+
+.copyBtn:hover {
+  background: rgba(201, 169, 110, 0.2);
+}
+
+.copyBtnDone {
+  background: var(--success-bg) !important;
+  color: var(--success) !important;
+}
+
+@media (max-width: 768px) {
+  .page { padding: 1.5rem; }
+  .topGrid { grid-template-columns: 1fr; }
+  .shareButtons { flex-wrap: wrap; }
+}

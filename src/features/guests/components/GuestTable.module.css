@@ -1,0 +1,112 @@
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.headRow {
+  background: var(--ivory);
+}
+
+.th {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--warm-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--sand);
+  white-space: nowrap;
+}
+
+.thRight {
+  text-align: right;
+}
+
+.row {
+  transition: background 150ms;
+  cursor: pointer;
+}
+
+.row:hover {
+  background: var(--ivory);
+}
+
+.td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--sand-light);
+  font-size: 13.5px;
+  color: var(--charcoal);
+  vertical-align: middle;
+}
+
+.tdRight {
+  text-align: right;
+}
+
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.guestName {
+  font-weight: 500;
+}
+
+.vipBadge,
+.elderBadge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 100px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+.vipBadge {
+  background: var(--gold-faint);
+  color: var(--gold);
+}
+
+.elderBadge {
+  background: var(--burgundy-light);
+  color: var(--burgundy);
+}
+
+.phone {
+  font-size: 12px;
+  color: var(--warm-gray);
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.actionBtn {
+  background: var(--gold-faint);
+  border: none;
+  border-radius: 8px;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 200ms;
+}
+
+.actionBtn:hover {
+  background: rgba(201, 169, 110, 0.2);
+}
+
+.actionBtnSuccess {
+  background: var(--success-bg) !important;
+}
