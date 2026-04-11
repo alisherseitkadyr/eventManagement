@@ -10,6 +10,7 @@ import styles from "./organizer-shell.module.css";
 
 interface OrganizerShellProps {
   event: EventProject;
+  allEvents?: EventProject[];
   children: ReactNode;
 }
 
@@ -26,7 +27,7 @@ function getInitials(title: string): string {
   return compact || title.slice(0, 2).toUpperCase();
 }
 
-export function OrganizerShell({ event, children }: OrganizerShellProps) {
+export function OrganizerShell({ event, allEvents = [], children }: OrganizerShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const eventDate = formatDate(event.stages[0]?.date ?? event.createdAt, "ru");
@@ -40,6 +41,7 @@ export function OrganizerShell({ event, children }: OrganizerShellProps) {
         eventName={eventTitle}
         eventDate={eventDate}
         eventInitials={eventInitials}
+        allEvents={allEvents}
         mobileOpen={mobileOpen}
         onClose={() => setMobileOpen(false)}
       />

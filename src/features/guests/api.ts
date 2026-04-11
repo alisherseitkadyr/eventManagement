@@ -1,5 +1,5 @@
 import type { Guest, GuestFilters, AddGuestInput } from "./types";
-import { api } from "@/shared/lib/api";
+import { api, useBackendApi } from "@/shared/lib/api";
 
 // ═══════════════════════════════════════════
 // Mock Data
@@ -22,10 +22,14 @@ export const MOCK_GUESTS: Guest[] = [
 // ═══════════════════════════════════════════
 export const guestsApi = {
   getByEvent: async (eventId: string, filters?: GuestFilters): Promise<Guest[]> => {
-    // return api.get<Guest[]>(`/events/${eventId}/guests`, filters as Record<string, string>);
+    if (useBackendApi) {
+      return api.get<Guest[]>(`/events/${eventId}/guests`, filters ? { ...filters } : undefined);
+    }
+
     let guests = MOCK_GUESTS.filter((g) => g.eventId === eventId);
     if (filters?.status) guests = guests.filter((g) => g.status === filters.status);
     if (filters?.side) guests = guests.filter((g) => g.side === filters.side);
+    if (filters?.category) guests = guests.filter((g) => g.category === filters.category);
     if (filters?.search) {
       const q = filters.search.toLowerCase();
       guests = guests.filter((g) => g.name.toLowerCase().includes(q));
@@ -34,25 +38,52 @@ export const guestsApi = {
   },
 
   getByToken: async (token: string): Promise<Guest> => {
-    // return api.get<Guest>(`/invitations/${token}/guest`);
+    if (useBackendApi) {
+      const invitation = await api.get<{ eventId?: string; guest: Guest } | { event: unknown; guest: Guest }>(
+        `/i/${token}`
+      );
+      return invitation.guest;
+    }
+
     const guest = MOCK_GUESTS.find((g) => g.token === token);
     if (!guest) throw new Error("Guest not found");
     return guest;
   },
 
   add: async (eventId: string, input: AddGuestInput): Promise<Guest> => {
+    if (!useBackendApi) {
+      throw new Error("Adding guests requires backend mode");
+    }
+
     return api.post<Guest>(`/events/${eventId}/guests`, input);
   },
 
   update: async (guestId: string, data: Partial<Guest>): Promise<Guest> => {
+    if (!useBackendApi) {
+      const guest = MOCK_GUESTS.find((item) => item.id === guestId);
+      if (!guest) {
+        throw new Error("Guest not found");
+      }
+
+      return { ...guest, ...data };
+    }
+
     return api.patch<Guest>(`/guests/${guestId}`, data);
   },
 
   delete: async (guestId: string): Promise<void> => {
+    if (!useBackendApi) {
+      return;
+    }
+
     return api.delete(`/guests/${guestId}`);
   },
 
   sendReminder: async (guestId: string): Promise<void> => {
+    if (!useBackendApi) {
+      return;
+    }
+
     return api.post(`/guests/${guestId}/remind`);
   },
 

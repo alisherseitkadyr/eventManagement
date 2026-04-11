@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Badge, Button, Card, SectionTitle } from "@/shared/components/ui";
-import { Icon } from "@/shared/components/ui/icon";
+import { Badge, Card, SectionTitle } from "@/shared/components/ui";
 import { formatDate, rsvpStatusConfig, rsvpStatusLabels } from "@/shared/lib/utils";
 import type { Language } from "@/shared/types/common";
 import type { InvitationPayload } from "@/features/invitation/api";
@@ -11,7 +10,7 @@ import { InvitationContent } from "@/features/invitation/components/invitation-c
 
 export function InvitationExperience({ invitation }: { invitation: InvitationPayload }) {
   const [lang, setLang] = useState<Language>("ru");
-  const [copied, setCopied] = useState(false);
+  
   const leadStage = invitation.visibleStages[0] ?? invitation.event.stages[0];
   const responseStatus = invitation.response?.status;
 
@@ -51,49 +50,37 @@ export function InvitationExperience({ invitation }: { invitation: InvitationPay
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <div
-              style={{
-                display: "flex",
-                borderRadius: 100,
-                border: "1.5px solid var(--sand)",
-                overflow: "hidden",
-                background: "rgba(255,255,255,0.78)",
-              }}
-            >
-              {(["ru", "kz"] as const).map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setLang(value)}
-                  style={{
-                    padding: "0.45rem 0.95rem",
-                    border: "none",
-                    background: lang === value ? "var(--burgundy)" : "transparent",
-                    color: lang === value ? "var(--white)" : "var(--charcoal-soft)",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    fontFamily: "var(--font-body)",
-                  }}
-                >
-                  {value === "ru" ? "Рус" : "Қаз"}
-                </button>
-              ))}
+            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  borderRadius: 100,
+                  border: "1.5px solid var(--sand)",
+                  overflow: "hidden",
+                  background: "rgba(255,255,255,0.78)",
+                }}
+              >
+                {(["ru", "kz"] as const).map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setLang(value)}
+                    style={{
+                      padding: "0.45rem 0.95rem",
+                      border: "none",
+                      background: lang === value ? "var(--burgundy)" : "transparent",
+                      color: lang === value ? "var(--white)" : "var(--charcoal-soft)",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      fontFamily: "var(--font-body)",
+                    }}
+                  >
+                    {value === "ru" ? "Рус" : "Қаз"}
+                  </button>
+                ))}
+              </div>
             </div>
-
-            <Button
-              variant="ghost"
-              onClick={() => {
-                navigator.clipboard.writeText(buildClientInvitationUrl(invitation.guest.token));
-                setCopied(true);
-                window.setTimeout(() => setCopied(false), 1500);
-              }}
-            >
-              <Icon name={copied ? "check" : "copy"} size={14} color="currentColor" />
-              {copied ? "Скопировано" : "Скопировать ссылку"}
-            </Button>
-          </div>
         </div>
 
         <div

@@ -1,6 +1,6 @@
 import type { EventProject, EventStage } from "@/features/events/types";
 import type { Guest } from "@/features/guests/types";
-import { api } from "@/shared/lib/api";
+import { api, useBackendApi } from "@/shared/lib/api";
 import { MOCK_EVENT } from "@/features/events/api";
 import { MOCK_GUESTS } from "@/features/guests/api";
 import { rsvpApi, type RSVPResponse } from "@/features/rsvp/api";
@@ -55,18 +55,28 @@ export async function getInvitationByToken(token: string): Promise<InvitationPay
 
 export const invitationApi = {
   getByToken: async (token: string): Promise<InvitationData> => {
-    // return api.get<InvitationData>(`/i/${token}`);
+    if (useBackendApi) {
+      return api.get<InvitationData>(`/i/${token}`);
+    }
+
     const guest = MOCK_GUESTS.find((g) => g.token === token);
     if (!guest) throw new Error("Invitation not found");
     return { event: MOCK_EVENT, guest };
   },
 
   markOpened: async (token: string): Promise<void> => {
-    // return api.post(`/i/${token}/opened`);
+    if (!useBackendApi) {
+      return;
+    }
+
+    return api.post(`/i/${token}/opened`);
   },
 
   generatePdf: async (token: string): Promise<string> => {
-    // return api.get<string>(`/i/${token}/pdf`);
+    if (useBackendApi) {
+      return api.get<string>(`/i/${token}/pdf`);
+    }
+
     return "/mock-invitation.pdf";
   },
 };

@@ -1,4 +1,4 @@
-import { PreviewView } from "@/features/events/components/organizer-pages";
+import { PreviewView } from "@/features/events/components/preview-view";
 import { eventsApi } from "@/features/events/api";
 import { guestsApi } from "@/features/guests/api";
 

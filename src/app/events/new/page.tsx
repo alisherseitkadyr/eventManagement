@@ -64,6 +64,7 @@ export default function NewEventPage() {
   const [languages, setLanguages] = useState<Language[]>(["ru", "kz"]);
   const [template, setTemplate] = useState<TemplateStyle>("elegant");
   const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const toggleLang = (lang: Language) => {
     setLanguages((prev) =>
@@ -77,6 +78,7 @@ export default function NewEventPage() {
 
   const handleCreate = async () => {
     setSubmitting(true);
+    setErrorMessage(null);
     try {
       const event = await eventsApi.create({
         type: eventType,
@@ -86,6 +88,7 @@ export default function NewEventPage() {
       });
       router.push(`/events/${event.id}`);
     } catch {
+      setErrorMessage("Создание событий заработает после подключения backend и включения backend mode.");
       setSubmitting(false);
     }
   };
@@ -146,6 +149,22 @@ export default function NewEventPage() {
             </div>
           ))}
         </div>
+
+        {errorMessage ? (
+          <div
+            style={{
+              marginBottom: "1.25rem",
+              padding: "0.85rem 1rem",
+              borderRadius: 14,
+              background: "var(--warning-bg)",
+              color: "var(--charcoal-soft)",
+              fontSize: 13,
+              lineHeight: 1.6,
+            }}
+          >
+            {errorMessage}
+          </div>
+        ) : null}
 
         {/* Step 0 — Event type */}
         {step === 0 && (

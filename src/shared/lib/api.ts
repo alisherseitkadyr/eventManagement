@@ -2,10 +2,15 @@
 // Base API Client
 // ═══════════════════════════════════════════
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "/api";
+const DEFAULT_SERVER_API_URL = "http://127.0.0.1:8080";
+
+export const useBackendApi = (process.env.NEXT_PUBLIC_API_MODE ?? "mock") === "backend";
+
+export type QueryValue = string | number | boolean | null | undefined;
+export type QueryParams = Record<string, QueryValue>;
 
 interface FetchOptions extends RequestInit {
-  params?: Record<string, string>;
+  params?: QueryParams;
 }
 
 class ApiError extends Error {
@@ -20,11 +25,28 @@ async function baseFetch<T>(
   options: FetchOptions = {}
 ): Promise<T> {
   const { params, ...fetchOptions } = options;
+  const apiBase = useBackendApi
+    ? typeof window !== "undefined"
+      ? "/api"
+      : (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || DEFAULT_SERVER_API_URL).replace(/\/$/, "")
+    : "";
 
-  let url = `${API_BASE}${endpoint}`;
+  let url = `${apiBase}${endpoint}`;
   if (params) {
-    const searchParams = new URLSearchParams(params);
-    url += `?${searchParams.toString()}`;
+    const searchParams = new URLSearchParams();
+
+    for (const [key, value] of Object.entries(params)) {
+      if (value === undefined || value === null || value === "") {
+        continue;
+      }
+
+      searchParams.set(key, String(value));
+    }
+
+    const queryString = searchParams.toString();
+    if (queryString) {
+      url += `?${queryString}`;
+    }
   }
 
   const response = await fetch(url, {
@@ -32,6 +54,7 @@ async function baseFetch<T>(
       "Content-Type": "application/json",
       ...fetchOptions.headers,
     },
+    cache: fetchOptions.cache ?? "no-store",
     ...fetchOptions,
   });
 
@@ -49,7 +72,7 @@ async function baseFetch<T>(
 }
 
 export const api = {
-  get: <T>(endpoint: string, params?: Record<string, string>) =>
+  get: <T>(endpoint: string, params?: QueryParams) =>
     baseFetch<T>(endpoint, { method: "GET", params }),
 
   post: <T>(endpoint: string, body?: unknown) =>

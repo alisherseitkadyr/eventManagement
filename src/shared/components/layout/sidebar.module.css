@@ -153,6 +153,27 @@
   color: var(--warm-gray);
 }
 
+/* Scrollable middle section (event selector + nav) */
+.scrollableMiddle {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  /* thin custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--sand) transparent;
+}
+
+.scrollableMiddle::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollableMiddle::-webkit-scrollbar-thumb {
+  background: var(--sand);
+  border-radius: 4px;
+}
+
 /* Navigation */
 .nav {
   flex: 1;
@@ -221,4 +242,94 @@
 
 .settingsBtn:hover {
   background: var(--ivory);
+}
+
+/* Event switcher — inline collapsible */
+.switcherTrigger {
+  background: var(--white);
+  border-radius: 12px;
+  border: 1px solid var(--sand);
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 200ms, border-color 200ms;
+  width: 100%;
+  font-family: var(--font-body);
+}
+
+.switcherTrigger:hover {
+  background: var(--ivory);
+}
+
+.switcherOpen {
+  border-color: var(--burgundy);
+  background: var(--gold-faint);
+  border-radius: 12px 12px 0 0;
+  border-bottom-color: transparent;
+}
+
+.switcherList {
+  border: 1px solid var(--burgundy);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.switcherItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  width: 100%;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  text-align: left;
+  transition: background 150ms;
+}
+
+.switcherItem:hover {
+  background: var(--ivory);
+}
+
+.switcherItemActive {
+  background: var(--gold-faint);
+}
+
+.switcherItemName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--charcoal);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.switcherDivider {
+  height: 1px;
+  background: var(--sand);
+  margin: 0;
+}
+
+.switcherNewItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.65rem 1rem;
+  text-decoration: none;
+  color: var(--burgundy);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 150ms;
+  font-family: var(--font-body);
+}
+
+.switcherNewItem:hover {
+  background: var(--gold-faint);
 }

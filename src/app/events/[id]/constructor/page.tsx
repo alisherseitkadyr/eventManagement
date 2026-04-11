@@ -1,4 +1,4 @@
-import { ConstructorView } from "@/features/events/components/organizer-pages";
+import { ConstructorView } from "@/features/events/components/constructor-view";
 import { eventsApi } from "@/features/events/api";
 import { guestsApi } from "@/features/guests/api";
 

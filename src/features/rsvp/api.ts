@@ -1,5 +1,6 @@
 import type { RSVPStatus } from "@/shared/types/common";
-import { api } from "@/shared/lib/api";
+import { api, useBackendApi } from "@/shared/lib/api";
+import { MOCK_GUESTS } from "@/features/guests/api";
 
 export interface RSVPResponse {
   guestId: string;
@@ -23,12 +24,16 @@ export interface RSVPSubmitInput {
 
 export const rsvpApi = {
   submit: async (input: RSVPSubmitInput): Promise<RSVPResponse> => {
-    // return api.post<RSVPResponse>(`/rsvp/${input.token}`, input);
-    // Mock: return success
+    if (useBackendApi) {
+      return api.post<RSVPResponse>(`/rsvp/${input.token}`, input);
+    }
+
+    const guest = MOCK_GUESTS.find((item) => item.token === input.token);
+
     return {
-      guestId: "mock",
+      guestId: guest?.id ?? "mock",
       status: input.status,
-      count: input.count || 1,
+      count: input.count || guest?.count || 1,
       needsTransfer: input.needsTransfer || false,
       hasChildren: input.hasChildren || false,
       comment: input.comment,
@@ -36,7 +41,10 @@ export const rsvpApi = {
   },
 
   getByToken: async (token: string): Promise<RSVPResponse | null> => {
-    // return api.get<RSVPResponse | null>(`/rsvp/${token}`);
+    if (useBackendApi) {
+      return api.get<RSVPResponse | null>(`/rsvp/${token}`);
+    }
+
     return null; // Not yet responded
   },
 };

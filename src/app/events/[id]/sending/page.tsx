@@ -1,4 +1,4 @@
-import { SendingView } from "@/features/events/components/organizer-pages";
+import { SendingView } from "@/features/events/components/sending-view";
 import { eventsApi } from "@/features/events/api";
 import { guestsApi } from "@/features/guests/api";
 

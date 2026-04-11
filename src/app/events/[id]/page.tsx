@@ -1,4 +1,4 @@
-import { EventDashboardView } from "@/features/events/components/organizer-pages";
+import { EventDashboardView } from "@/features/events/components/event-dashboard";
 import { eventsApi } from "@/features/events/api";
 import { guestsApi } from "@/features/guests/api";
 

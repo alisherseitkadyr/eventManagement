@@ -9,7 +9,10 @@ interface EventLayoutProps {
 
 export default async function EventLayout({ children, params }: EventLayoutProps) {
   const { id } = await params;
-  const event = await eventsApi.getById(id);
+  const [event, allEvents] = await Promise.all([
+    eventsApi.getById(id),
+    eventsApi.listAll(),
+  ]);
 
-  return <OrganizerShell event={event}>{children}</OrganizerShell>;
+  return <OrganizerShell event={event} allEvents={allEvents}>{children}</OrganizerShell>;
 }
