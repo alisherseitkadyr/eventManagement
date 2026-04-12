@@ -99,7 +99,7 @@ export default function NewEventPage() {
         {/* Logo */}
         <div style={{ marginBottom: "2rem" }}>
           <a
-            href="/dashboard"
+            href="/"
             style={{
               fontFamily: "var(--font-display)",
               fontSize: 20,

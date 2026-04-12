@@ -1,0 +1,24 @@
+.card {
+  display: block;
+  background: var(--white);
+  border-radius: 20px;
+  border: 1px solid var(--sand);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+.dashedCard {
+  composes: card;
+  border: 2px dashed var(--sand);
+}
+
+.dashedCard:hover {
+  border-color: var(--gold);
+}

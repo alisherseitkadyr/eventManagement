@@ -62,7 +62,7 @@ export function Sidebar({
     <aside className={`${styles.sidebar} ${mobileOpen ? styles.open : ""}`}>
       {/* Logo — fixed top */}
       <div className={styles.logoArea}>
-        <Link href="/dashboard" className={styles.logo} onClick={onClose}>
+        <Link href={`/events/${eventId}`} className={styles.logo} onClick={onClose}>
           Qona<span className={styles.logoAccent}>q</span>
         </Link>
         <div className={styles.logoSub}>Панель организатора</div>
