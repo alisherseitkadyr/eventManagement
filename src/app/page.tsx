@@ -1,40 +1,11 @@
 import Link from "next/link";
 import { eventsApi } from "@/features/events/api";
-import { EventCard, CreateScratchCard, TemplateCard, UploadDesignCard } from "@/features/events/components/dashboard-cards";
+import { EventCard } from "@/features/events/components/dashboard-cards";
 
 export const dynamic = "force-dynamic";
 
-// ─── Main Dashboard Page ──────────────────────────────────────────────────
-export default async function DashboardPage() {
+export default async function MyInvitationsPage() {
   const events = await eventsApi.listAll();
-
-  // Pre-made template designs
-  const templates = [
-    {
-      title: "Свадебное приглашение",
-      description: "Элегантный дизайн для вашего особенного дня",
-      emoji: "💍",
-      href: "/events/new?template=wedding",
-    },
-    {
-      title: "День рождения",
-      description: "Яркое и праздничное приглашение",
-      emoji: "🎂",
-      href: "/events/new?template=birthday",
-    },
-    {
-      title: "Корпоративное мероприятие",
-      description: "Профессиональный стиль для деловых встреч",
-      emoji: "💼",
-      href: "/events/new?template=corporate",
-    },
-    {
-      title: "Вечеринка",
-      description: "Веселое приглашение для встречи с друзьями",
-      emoji: "🎉",
-      href: "/events/new?template=party",
-    },
-  ];
 
   return (
     <div
@@ -45,65 +16,54 @@ export default async function DashboardPage() {
         padding: "2.5rem 2rem",
       }}
     >
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         {/* Header */}
-        <div style={{ marginBottom: "2.5rem" }}>
-          <h1
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: 36,
-              fontWeight: 300,
-              color: "var(--charcoal)",
-              marginBottom: 8,
-            }}
-          >
-            Мои приглашения
-          </h1>
-          <p style={{ fontSize: 15, color: "var(--warm-gray)" }}>
-            Создавайте красивые приглашения для ваших особенных событий
-          </p>
-        </div>
-
-        {/* Quick actions row */}
-        <div style={{ marginBottom: "3rem" }}>
-          <h2
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: 22,
-              fontWeight: 400,
-              color: "var(--charcoal)",
-              marginBottom: "1.25rem",
-            }}
-          >
-            Быстрое создание
-          </h2>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-              gap: 20,
-            }}
-          >
-            <CreateScratchCard />
-
-            {/* Upload custom design card */}
-            <UploadDesignCard />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            justifyContent: "space-between",
+            marginBottom: "2.5rem",
+          }}
+        >
+          <div>
+            <h1
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: 34,
+                fontWeight: 300,
+                color: "var(--charcoal)",
+                marginBottom: 6,
+              }}
+            >
+              My Invitations
+            </h1>
+            <p style={{ fontSize: 14, color: "var(--warm-gray)" }}>
+              Click an invitation to manage it, or create a new one.
+            </p>
           </div>
-        </div>
-
-        {/* Templates section */}
-        <div style={{ marginBottom: "3rem" }}>
-          <h2
+          <Link
+            href="/events/new"
             style={{
-              fontFamily: "var(--font-display)",
-              fontSize: 22,
-              fontWeight: 400,
-              color: "var(--charcoal)",
-              marginBottom: "1.25rem",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "0.55rem 1.1rem",
+              borderRadius: 10,
+              background: "var(--burgundy)",
+              color: "var(--white)",
+              fontSize: 13,
+              fontWeight: 500,
+              textDecoration: "none",
+              transition: "opacity 150ms",
             }}
           >
-            Готовые шаблоны
-          </h2>
+            + New Invitation
+          </Link>
+        </div>
+
+        {/* Invitation cards */}
+        {events.length > 0 ? (
           <div
             style={{
               display: "grid",
@@ -111,68 +71,19 @@ export default async function DashboardPage() {
               gap: 20,
             }}
           >
-            {templates.map((template) => (
-              <TemplateCard key={template.title} {...template} />
+            {events.map((event) => (
+              <EventCard key={event.id} event={event} />
             ))}
           </div>
-        </div>
-
-        {/* Your existing invitations */}
-        {events.length > 0 && (
-          <div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "baseline",
-                justifyContent: "space-between",
-                marginBottom: "1.25rem",
-              }}
-            >
-              <h2
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 22,
-                  fontWeight: 400,
-                  color: "var(--charcoal)",
-                }}
-              >
-                Ваши приглашения
-              </h2>
-              <Link
-                href="/events/new"
-                style={{
-                  fontSize: 14,
-                  color: "var(--burgundy)",
-                  textDecoration: "none",
-                  fontWeight: 500,
-                }}
-              >
-                + Создать новое
-              </Link>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-                gap: 20,
-              }}
-            >
-              {events.map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Empty state (if no events) */}
-        {events.length === 0 && (
+        ) : (
+          /* Empty state */
           <div
             style={{
               textAlign: "center",
-              padding: "4rem 2rem",
+              padding: "5rem 2rem",
               background: "var(--white)",
               borderRadius: 24,
-              border: "1px solid var(--sand)",
+              border: "1px dashed var(--sand)",
             }}
           >
             <div style={{ fontSize: 48, marginBottom: 16 }}>📬</div>
@@ -185,11 +96,26 @@ export default async function DashboardPage() {
                 marginBottom: 8,
               }}
             >
-              У вас пока нет приглашений
+              No invitations yet
             </div>
             <p style={{ fontSize: 14, color: "var(--warm-gray)", marginBottom: 24 }}>
-              Создайте первое приглашение или выберите готовый шаблон выше
+              Create your first invitation or pick a template to get started.
             </p>
+            <Link
+              href="/templates"
+              style={{
+                display: "inline-block",
+                padding: "0.65rem 1.5rem",
+                borderRadius: 10,
+                background: "var(--burgundy)",
+                color: "var(--white)",
+                fontSize: 14,
+                fontWeight: 500,
+                textDecoration: "none",
+              }}
+            >
+              Browse Templates
+            </Link>
           </div>
         )}
       </div>
