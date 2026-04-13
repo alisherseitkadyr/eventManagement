@@ -3,11 +3,12 @@ package app
 import (
 	"time"
 
-	"github.com/lib/pq"
-
 	"event/internal/events"
 	"event/internal/guests"
 	"event/internal/stages"
+	"event/internal/templates"
+
+	"github.com/lib/pq"
 )
 
 func seedDemoData(
@@ -148,4 +149,168 @@ func mustTime(value string) time.Time {
 	}
 
 	return parsed
+}
+
+func seedTemplates(templateRepo templates.Repository) error {
+	now := mustTime("2026-01-10T10:00:00Z")
+
+	templatesData := []*templates.Template{
+		{
+			ID:              "tpl_001",
+			Name:            "Elegant Wedding",
+			Type:            "wedding",
+			TemplateStyle:   "elegant",
+			AccentColor:     "#7A2E3A",
+			Languages:       []string{"ru", "kz"},
+			PreviewImageURL: "/templates/elegant.jpg",
+			IsActive:        true,
+			SortOrder:       1,
+			CreatedAt:       now,
+			UpdatedAt:       now,
+			Blocks: []templates.TemplateBlock{
+				{BlockID: "cover", Label: "Cover Image", Enabled: true, SortOrder: 1, Settings: map[string]interface{}{
+					"height":  300,
+					"overlay": "rgba(0,0,0,0.3)",
+				}},
+				{BlockID: "title", Label: "Title", Enabled: true, SortOrder: 2, Settings: map[string]interface{}{
+					"fontSize": 36,
+					"align":    "center",
+				}},
+			},
+		},
+
+		{
+			ID:              "tpl_002",
+			Name:            "Modern Minimal",
+			Type:            "universal",
+			TemplateStyle:   "minimal",
+			AccentColor:     "#111111",
+			Languages:       []string{"ru", "kz"},
+			PreviewImageURL: "/templates/minimal.jpg",
+			IsActive:        true,
+			SortOrder:       2,
+			CreatedAt:       now,
+			UpdatedAt:       now,
+		},
+
+		{
+			ID:              "tpl_003",
+			Name:            "Kazakh Traditional",
+			Type:            "wedding",
+			TemplateStyle:   "traditional",
+			AccentColor:     "#C9A227",
+			Languages:       []string{"kz", "ru"},
+			PreviewImageURL: "/templates/kazakh.jpg",
+			IsActive:        true,
+			SortOrder:       3,
+			CreatedAt:       now,
+			UpdatedAt:       now,
+		},
+
+		{
+			ID:              "tpl_004",
+			Name:            "Dark Luxury",
+			Type:            "wedding",
+			TemplateStyle:   "dark",
+			AccentColor:     "#D4AF37",
+			Languages:       []string{"ru"},
+			PreviewImageURL: "/templates/dark.jpg",
+			IsActive:        true,
+			SortOrder:       4,
+			CreatedAt:       now,
+			UpdatedAt:       now,
+		},
+
+		{
+			ID:              "tpl_005",
+			Name:            "Birthday Fun",
+			Type:            "birthday",
+			TemplateStyle:   "colorful",
+			AccentColor:     "#FF6B6B",
+			Languages:       []string{"ru"},
+			PreviewImageURL: "/templates/birthday.jpg",
+			IsActive:        true,
+			SortOrder:       5,
+			CreatedAt:       now,
+			UpdatedAt:       now,
+		},
+
+		{
+			ID:              "tpl_006",
+			Name:            "Corporate Clean",
+			Type:            "corporate",
+			TemplateStyle:   "clean",
+			AccentColor:     "#2563EB",
+			Languages:       []string{"ru", "en"},
+			PreviewImageURL: "/templates/corporate.jpg",
+			IsActive:        true,
+			SortOrder:       6,
+			CreatedAt:       now,
+			UpdatedAt:       now,
+		},
+
+		{
+			ID:              "tpl_007",
+			Name:            "Floral Wedding",
+			Type:            "wedding",
+			TemplateStyle:   "floral",
+			AccentColor:     "#E8A0BF",
+			Languages:       []string{"ru", "kz"},
+			PreviewImageURL: "/templates/floral.jpg",
+			IsActive:        true,
+			SortOrder:       7,
+			CreatedAt:       now,
+			UpdatedAt:       now,
+		},
+
+		{
+			ID:              "tpl_008",
+			Name:            "Classic White",
+			Type:            "wedding",
+			TemplateStyle:   "classic",
+			AccentColor:     "#FFFFFF",
+			Languages:       []string{"ru"},
+			PreviewImageURL: "/templates/classic.jpg",
+			IsActive:        true,
+			SortOrder:       8,
+			CreatedAt:       now,
+			UpdatedAt:       now,
+		},
+
+		{
+			ID:              "tpl_009",
+			Name:            "Night Party",
+			Type:            "party",
+			TemplateStyle:   "neon",
+			AccentColor:     "#00FFFF",
+			Languages:       []string{"ru"},
+			PreviewImageURL: "/templates/party.jpg",
+			IsActive:        true,
+			SortOrder:       9,
+			CreatedAt:       now,
+			UpdatedAt:       now,
+		},
+
+		{
+			ID:              "tpl_010",
+			Name:            "Soft Pastel",
+			Type:            "wedding",
+			TemplateStyle:   "pastel",
+			AccentColor:     "#FADADD",
+			Languages:       []string{"ru", "kz"},
+			PreviewImageURL: "/templates/pastel.jpg",
+			IsActive:        true,
+			SortOrder:       10,
+			CreatedAt:       now,
+			UpdatedAt:       now,
+		},
+	}
+
+	for _, t := range templatesData {
+		if err := templateRepo.Create(t); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

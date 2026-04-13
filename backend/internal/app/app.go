@@ -17,6 +17,7 @@ import (
 	"event/internal/shared/db"
 	"event/internal/shared/handler"
 	"event/internal/stages"
+	"event/internal/templates"
 )
 
 type App struct {
@@ -56,16 +57,27 @@ func New() (*App, error) {
 	eventRepo := events.NewRepository(pool)
 	guestRepo := guests.NewRepository(pool)
 	stageRepo := stages.NewRepository(pool)
+// In New() after initializing other repos:
+	templateRepo := templates.NewRepository(pool)
+
+// Then pass templateHandler to handler.New(...)
+	
 
 	// Initialize services
 	eventService := events.NewService(eventRepo, stageRepo, guestStatsAdapter{repo: guestRepo})
 	guestService := guests.NewService(guestRepo, eventValidatorAdapter{repo: eventRepo})
 	stageService := stages.NewService(stageRepo)
 	rsvpService := rsvp.NewService(guestRepo)
+	templateService := templates.NewService(templateRepo)
+
 
 	if err := seedDemoData(eventRepo, guestRepo, stageRepo); err != nil {
 		return nil, fmt.Errorf("seed demo data: %w", err)
 	}
+
+	// if err:= seedTemplates(templateRepo); err != nil {
+	// 	return nil, fmt.Errorf("seed templates: %w", err)
+	// }	
 
 	// Initialize handlers
 	eventHandler := events.NewHandler(eventService)
@@ -74,8 +86,10 @@ func New() (*App, error) {
 	invitationService := invitation.NewService(eventService, guestService, rsvpService)
 	invitationHandler := invitation.NewHandler(invitationService, cfg.AppURL)
 	rsvpHandler := rsvp.NewHandler(rsvpService)
+	templateHandler := templates.NewHandler(templateService)
 
-	r := handler.New(eventHandler, guestHandler, stageHandler, invitationHandler, rsvpHandler)
+
+	r := handler.New(eventHandler, guestHandler, stageHandler, invitationHandler, rsvpHandler, templateHandler)
 
 	server := &http.Server{
 		Addr:         ":" + cfg.Port,
