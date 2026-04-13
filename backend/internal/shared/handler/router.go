@@ -14,6 +14,7 @@ import (
 	"event/internal/invitation"
 	"event/internal/rsvp"
 	"event/internal/stages"
+	"event/internal/templates"
 )
 
 func New(
@@ -22,6 +23,7 @@ func New(
 	stageHandler *stages.Handler,
 	invitationHandler *invitation.Handler,
 	rsvpHandler *rsvp.Handler,
+	templateHandler *templates.Handler,
 ) *chi.Mux {
 	r := chi.NewRouter()
 
@@ -48,6 +50,8 @@ func New(
 		w.Write([]byte("OK"))
 	})
 
+	r.Mount("/templates", templateHandler.Routes())
+	
 	r.Mount("/events", eventHandler.Routes())
 
 	// Guest routes registered directly to avoid the "/" mount swallowing all requests
