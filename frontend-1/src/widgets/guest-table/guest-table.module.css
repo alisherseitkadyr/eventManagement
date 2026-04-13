@@ -1,0 +1,111 @@
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.headRow {
+  background: rgba(245, 237, 228, 0.6);
+}
+
+.th {
+  padding: 0.95rem 1rem;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--warm-gray);
+  border-bottom: 1px solid var(--sand);
+}
+
+.thRight {
+  text-align: right;
+}
+
+.row {
+  border-bottom: 1px solid var(--sand-light);
+}
+
+.td {
+  padding: 0.9rem 1rem;
+  vertical-align: middle;
+  font-size: 13px;
+  color: var(--charcoal-soft);
+}
+
+.tdRight {
+  text-align: right;
+}
+
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.guestName {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.vipBadge,
+.elderBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.vipBadge {
+  background: var(--gold-faint);
+  color: var(--burgundy);
+}
+
+.elderBadge {
+  background: rgba(79, 95, 191, 0.1);
+  color: var(--info);
+}
+
+.phone {
+  color: var(--warm-gray);
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.actionBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--sand);
+  background: var(--white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 180ms ease;
+}
+
+.actionBtn:hover {
+  background: var(--gold-faint);
+  border-color: var(--gold);
+}
+
+.actionBtnSuccess {
+  background: var(--success-bg);
+  border-color: rgba(45, 138, 86, 0.2);
+}

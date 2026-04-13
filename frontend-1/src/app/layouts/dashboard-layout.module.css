@@ -1,0 +1,89 @@
+.shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(201, 169, 110, 0.12), transparent 28%),
+    linear-gradient(180deg, var(--cream) 0%, #f8f1ea 100%);
+  color: var(--charcoal);
+  font-family: var(--font-body);
+}
+
+.mainArea {
+  min-height: 100vh;
+  margin-left: 260px;
+}
+
+.main {
+  min-height: 100vh;
+}
+
+.mobileBar {
+  display: none;
+}
+
+.mobileMenuButton {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--sand);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--burgundy);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 30px rgba(44, 40, 37, 0.08);
+}
+
+.mobileEventMeta {
+  min-width: 0;
+}
+
+.mobileEventTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--charcoal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobileEventDate {
+  font-size: 11px;
+  color: var(--warm-gray);
+  margin-top: 2px;
+}
+
+.overlay {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .mainArea {
+    margin-left: 0;
+  }
+
+  .mobileBar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.85rem 1rem;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    background: rgba(250, 246, 241, 0.82);
+    border-bottom: 1px solid rgba(232, 221, 208, 0.8);
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 40, 37, 0.28);
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    z-index: 35;
+  }
+}

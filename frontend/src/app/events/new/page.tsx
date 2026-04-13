@@ -88,7 +88,7 @@ export default function NewEventPage() {
       });
       router.push(`/events/${event.id}`);
     } catch {
-      setErrorMessage("Создание событий заработает после подключения backend и включения backend mode.");
+      setErrorMessage("Не удалось создать событие. Попробуйте еще раз.");
       setSubmitting(false);
     }
   };

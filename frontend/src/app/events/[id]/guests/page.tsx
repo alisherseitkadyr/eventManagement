@@ -1,6 +1,5 @@
 import GuestsClient from "./GuestsClient";
-import { eventsApi } from "@/features/events/api";
-import { guestsApi } from "@/features/guests/api";
+import { getEventById, listGuestsByEvent } from "@/shared/lib/mock-store";
 
 interface GuestsPageProps {
   params: Promise<{ id: string }>;
@@ -8,7 +7,8 @@ interface GuestsPageProps {
 
 export default async function GuestsPage({ params }: GuestsPageProps) {
   const { id } = await params;
-  const [event, guests] = await Promise.all([eventsApi.getById(id), guestsApi.getByEvent(id)]);
+  const event = getEventById(id);
+  const guests = listGuestsByEvent(id);
 
   return <GuestsClient event={event} guests={guests} />;
 }

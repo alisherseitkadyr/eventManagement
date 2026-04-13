@@ -1,6 +1,5 @@
 import { PreviewView } from "@/features/events/components/preview-view";
-import { eventsApi } from "@/features/events/api";
-import { guestsApi } from "@/features/guests/api";
+import { getEventById, listGuestsByEvent } from "@/shared/lib/mock-store";
 
 interface PreviewPageProps {
   params: Promise<{ id: string }>;
@@ -8,7 +7,8 @@ interface PreviewPageProps {
 
 export default async function PreviewPage({ params }: PreviewPageProps) {
   const { id } = await params;
-  const [event, guests] = await Promise.all([eventsApi.getById(id), guestsApi.getByEvent(id)]);
+  const event = getEventById(id);
+  const guests = listGuestsByEvent(id);
 
   return <PreviewView event={event} guests={guests} />;
 }

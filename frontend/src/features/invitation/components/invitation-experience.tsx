@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Badge, Card, SectionTitle } from "@/shared/components/ui";
+import { Icon } from "@/shared/components/ui/icon";
 import { formatDate, rsvpStatusConfig, rsvpStatusLabels } from "@/shared/lib/utils";
 import type { Language } from "@/shared/types/common";
 import type { InvitationPayload } from "@/features/invitation/api";

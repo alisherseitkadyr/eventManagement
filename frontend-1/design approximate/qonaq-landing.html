@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qonaq — Цифровые приглашения для казахстанских мероприятий</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream: #FAF6F1;
+  --ivory: #F5EDE4;
+  --sand: #E8DDD0;
+  --warm-gray: #9C9186;
+  --burgundy: #7A2E3A;
+  --burgundy-deep: #5C1D29;
+  --gold: #C9A96E;
+  --gold-light: #DCC69A;
+  --terracotta: #B8674D;
+  --charcoal: #2C2825;
+  --charcoal-soft: #4A4541;
+  --white: #FFFFFF;
+
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Outfit', sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--charcoal);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ UTILITY ═══ */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 3rem); }
+
+/* ═══ ORNAMENT SVG PATTERN ═══ */
+.ornament {
+  display: block;
+  margin: 0 auto;
+  opacity: 0.35;
+}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes dash {
+  to { stroke-dashoffset: 0; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══ GRAIN OVERLAY ═══ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ═══ HEADER / NAV ═══ */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 1.25rem 0;
+  transition: all 0.5s var(--ease-out-expo);
+}
+header.scrolled {
+  background: rgba(250, 246, 241, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201, 169, 110, 0.15);
+  padding: 0.75rem 0;
+}
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--burgundy);
+  letter-spacing: 0.03em;
+  text-decoration: none;
+}
+.logo span { color: var(--gold); }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--charcoal-soft);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  position: relative;
+  transition: color 0.3s;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.4s var(--ease-out-expo);
+}
+.nav-links a:hover { color: var(--burgundy); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  font-family: var(--font-body) !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  padding: 0.6rem 1.5rem;
+  background: var(--burgundy);
+  color: var(--white) !important;
+  border-radius: 100px;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  transition: all 0.3s var(--ease-out-expo) !important;
+}
+.nav-cta::after { display: none !important; }
+.nav-cta:hover {
+  background: var(--burgundy-deep) !important;
+  color: var(--white) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(122, 46, 58, 0.3);
+}
+
+/* Mobile nav */
+.hamburger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
+.hamburger span { display: block; width: 24px; height: 2px; background: var(--charcoal); margin: 5px 0; transition: all 0.3s; border-radius: 2px; }
+
+@media (max-width: 768px) {
+  .hamburger { display: block; z-index: 101; }
+  .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .hamburger.active span:nth-child(2) { opacity: 0; }
+  .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+  .nav-links {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  .nav-links.open { opacity: 1; pointer-events: all; }
+  .nav-links a { font-size: 1.25rem; }
+}
+
+/* ═══ HERO ═══ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-top: 5rem;
+  overflow: hidden;
+}
+.hero-bg-ornament {
+  position: absolute;
+  right: -10%; top: 5%;
+  width: clamp(400px, 55vw, 800px);
+  height: clamp(400px, 55vw, 800px);
+  opacity: 0.04;
+  animation: spin-slow 120s linear infinite;
+  pointer-events: none;
+}
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.hero-text { animation: fadeUp 1s var(--ease-out-expo) both; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: linear-gradient(135deg, rgba(201,169,110,0.12), rgba(201,169,110,0.05));
+  border: 1px solid rgba(201,169,110,0.25);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.75rem;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: float 3s ease-in-out infinite;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--charcoal);
+  margin-bottom: 1.5rem;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--burgundy);
+  font-weight: 400;
+}
+.hero h1 .gold { color: var(--gold); }
+.hero-desc {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--warm-gray);
+  max-width: 480px;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+}
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  background: var(--burgundy);
+  color: var(--white);
+  border: none;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.4s var(--ease-out-expo);
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background: var(--burgundy-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(122, 46, 58, 0.3);
+}
+.btn-primary svg { transition: transform 0.3s; }
+.btn-primary:hover svg { transform: translateX(4px); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.5rem;
+  background: transparent;
+  color: var(--charcoal-soft);
+  border: 1.5px solid var(--sand);
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.4s var(--ease-out-expo);
+  text-decoration: none;
+}
+.btn-ghost:hover {
+  border-color: var(--gold);
+  color: var(--burgundy);
+  background: rgba(201,169,110,0.06);
+}
+
+/* Hero card mockup */
+.hero-visual {
+  animation: scaleIn 1s 0.3s var(--ease-out-expo) both;
+  position: relative;
+}
+.invite-card {
+  background: var(--white);
+  border-radius: 1.25rem;
+  padding: 2.5rem;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.02),
+    0 8px 24px rgba(0,0,0,0.04),
+    0 24px 60px rgba(0,0,0,0.06);
+  position: relative;
+  overflow: hidden;
+  max-width: 380px;
+  margin-left: auto;
+}
+.invite-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--burgundy), var(--gold), var(--terracotta));
+}
+.invite-card-ornament {
+  width: 60px;
+  margin: 0 auto 1.5rem;
+  opacity: 0.2;
+}
+.invite-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  text-align: center;
+  color: var(--burgundy);
+  margin-bottom: 0.25rem;
+}
+.invite-card .names {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 500;
+  text-align: center;
+  color: var(--charcoal);
+  margin-bottom: 0.5rem;
+}
+.invite-card .names .amp {
+  color: var(--gold);
+  font-style: italic;
+  font-weight: 300;
+}
+.invite-card .date-line {
+  text-align: center;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--warm-gray);
+  margin-bottom: 1.5rem;
+}
+.invite-card .divider {
+  width: 40px; height: 1px;
+  background: var(--gold);
+  margin: 0 auto 1.5rem;
+}
+.invite-card .rsvp-mock {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.rsvp-btn-mock {
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: none;
+  cursor: default;
+  letter-spacing: 0.04em;
+}
+.rsvp-btn-mock.yes { background: var(--burgundy); color: var(--white); }
+.rsvp-btn-mock.no { background: var(--ivory); color: var(--charcoal-soft); }
+.rsvp-btn-mock.maybe { background: var(--ivory); color: var(--charcoal-soft); }
+
+.invite-float-badge {
+  position: absolute;
+  top: -12px; right: -12px;
+  background: var(--gold);
+  color: var(--white);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 100px;
+  animation: float 4s ease-in-out infinite;
+  box-shadow: 0 4px 16px rgba(201,169,110,0.4);
+}
+
+/* Floating stats */
+.hero-stats {
+  position: absolute;
+  bottom: -20px; left: -40px;
+  background: var(--white);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  animation: fadeUp 1s 0.8s var(--ease-out-expo) both;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.hero-stats .avatars {
+  display: flex;
+}
+.hero-stats .avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--white);
+  margin-left: -8px;
+}
+.hero-stats .avatar:first-child { margin-left: 0; }
+.hero-stats .stat-text {
+  font-size: 0.75rem;
+  color: var(--charcoal-soft);
+  line-height: 1.3;
+}
+.hero-stats .stat-text strong {
+  color: var(--burgundy);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .hero-content { grid-template-columns: 1fr; text-align: center; }
+  .hero-desc { margin-left: auto; margin-right: auto; }
+  .hero-actions { justify-content: center; }
+  .invite-card { margin: 2rem auto 0; }
+  .hero-stats { left: 50%; transform: translateX(-50%); bottom: -30px; }
+  .hero-bg-ornament { right: -30%; top: -10%; }
+}
+
+/* ═══ MARQUEE ═══ */
+.marquee-section {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--sand);
+  border-bottom: 1px solid var(--sand);
+  overflow: hidden;
+  margin-top: 3rem;
+}
+.marquee-track {
+  display: flex;
+  gap: 3rem;
+  animation: marquee 30s linear infinite;
+  width: max-content;
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-item {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--warm-gray);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.marquee-item .dot {
+  width: 5px; height: 5px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ═══ FEATURES ═══ */
+.features {
+  padding: 7rem 0;
+}
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--charcoal);
+  margin-bottom: 1.25rem;
+}
+.section-title em {
+  font-style: italic;
+  color: var(--burgundy);
+  font-weight: 400;
+}
+.section-desc {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--warm-gray);
+  max-width: 560px;
+  font-weight: 300;
+}
+.features-header { margin-bottom: 4rem; }
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.feature-card {
+  background: var(--white);
+  border-radius: 1rem;
+  padding: 2rem;
+  border: 1px solid rgba(232,221,208,0.6);
+  transition: all 0.5s var(--ease-out-expo);
+  position: relative;
+  overflow: hidden;
+}
+.feature-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.06);
+  border-color: rgba(201,169,110,0.2);
+}
+.feature-card:hover::after { opacity: 1; }
+.feature-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  font-size: 1.25rem;
+}
+.feature-icon.gold { background: linear-gradient(135deg, rgba(201,169,110,0.15), rgba(201,169,110,0.05)); color: var(--gold); }
+.feature-icon.burgundy { background: linear-gradient(135deg, rgba(122,46,58,0.12), rgba(122,46,58,0.04)); color: var(--burgundy); }
+.feature-icon.terra { background: linear-gradient(135deg, rgba(184,103,77,0.12), rgba(184,103,77,0.04)); color: var(--terracotta); }
+
+.feature-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--charcoal);
+  margin-bottom: 0.6rem;
+}
+.feature-card p {
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--warm-gray);
+  font-weight: 300;
+}
+
+@media (max-width: 900px) { .features-grid { grid-template-columns: 1fr; } }
+
+/* ═══ HOW IT WORKS ═══ */
+.how-it-works {
+  padding: 6rem 0;
+  background: var(--white);
+  position: relative;
+}
+.how-it-works::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sand), transparent);
+}
+.steps-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.steps-header .section-desc { margin: 0 auto; }
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  position: relative;
+}
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 36px;
+  left: 12.5%; right: 12.5%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--sand), var(--gold-light), var(--sand));
+}
+.step {
+  text-align: center;
+  position: relative;
+}
+.step-num {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 1.5px solid var(--sand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--burgundy);
+  transition: all 0.4s var(--ease-out-expo);
+  position: relative;
+  z-index: 1;
+}
+.step:hover .step-num {
+  background: var(--burgundy);
+  color: var(--white);
+  border-color: var(--burgundy);
+  transform: scale(1.08);
+  box-shadow: 0 8px 24px rgba(122,46,58,0.2);
+}
+.step h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--charcoal);
+}
+.step p {
+  font-size: 0.825rem;
+  line-height: 1.6;
+  color: var(--warm-gray);
+  font-weight: 300;
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .steps { grid-template-columns: 1fr 1fr; }
+  .steps::before { display: none; }
+}
+@media (max-width: 480px) { .steps { grid-template-columns: 1fr; } }
+
+/* ═══ TEMPLATES PREVIEW ═══ */
+.templates {
+  padding: 7rem 0;
+  position: relative;
+}
+.templates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.template-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.template-tag {
+  padding: 0.5rem 1.15rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  border: 1px solid var(--sand);
+  background: transparent;
+  color: var(--charcoal-soft);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.template-tag.active, .template-tag:hover {
+  background: var(--burgundy);
+  color: var(--white);
+  border-color: var(--burgundy);
+}
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.template-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.5s var(--ease-out-expo);
+  position: relative;
+  group: template;
+}
+.template-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+}
+.template-preview {
+  aspect-ratio: 3/4;
+  position: relative;
+  overflow: hidden;
+}
+.template-preview .tp-bg {
+  position: absolute;
+  inset: 0;
+}
+.template-preview .tp-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+/* Template 1: Modern Minimal */
+.tp-modern .tp-bg {
+  background: linear-gradient(180deg, #FEFDFB 0%, #F7F2EB 100%);
+}
+.tp-modern .tp-content h4 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: #2C2825;
+  letter-spacing: 0.02em;
+}
+.tp-modern .tp-content .tp-divider {
+  width: 30px; height: 1px;
+  background: var(--gold);
+  margin: 0.75rem 0;
+}
+.tp-modern .tp-content .tp-date {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--warm-gray);
+}
+
+/* Template 2: Elegant Classic */
+.tp-elegant .tp-bg {
+  background: linear-gradient(180deg, #5C1D29 0%, #3A1018 100%);
+}
+.tp-elegant .tp-content h4 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--gold-light);
+  font-style: italic;
+}
+.tp-elegant .tp-content .tp-divider {
+  width: 50px; height: 1px;
+  background: rgba(220,198,154,0.3);
+  margin: 0.75rem 0;
+}
+.tp-elegant .tp-content .tp-date {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(220,198,154,0.6);
+}
+
+/* Template 3: National */
+.tp-national .tp-bg {
+  background: linear-gradient(180deg, #F5EDE4 0%, #E8DDD0 100%);
+}
+.tp-national .tp-content { position: relative; }
+.tp-national .tp-content::before {
+  content: '';
+  position: absolute;
+  inset: 1.5rem;
+  border: 1px solid rgba(201,169,110,0.25);
+  border-radius: 0.5rem;
+}
+.tp-national .tp-content h4 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--burgundy);
+}
+.tp-national .tp-content .tp-divider {
+  width: 40px; height: 2px;
+  background: var(--gold);
+  margin: 0.75rem 0;
+  border-radius: 1px;
+}
+.tp-national .tp-content .tp-date {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.template-label {
+  padding: 1rem 1.25rem;
+  background: var(--white);
+  border: 1px solid rgba(232,221,208,0.6);
+  border-top: none;
+  border-radius: 0 0 1rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.template-label span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--charcoal);
+}
+.template-label .tl-badge {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 100px;
+}
+.tl-badge.free { background: rgba(16,185,129,0.1); color: #059669; }
+.tl-badge.premium { background: rgba(201,169,110,0.15); color: var(--gold); }
+
+@media (max-width: 768px) { .templates-grid { grid-template-columns: 1fr; max-width: 340px; margin: 0 auto; } }
+
+/* ═══ EVENTS SECTION ═══ */
+.events {
+  padding: 6rem 0;
+  background: var(--charcoal);
+  position: relative;
+  overflow: hidden;
+}
+.events::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 80%, rgba(122,46,58,0.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 20%, rgba(201,169,110,0.1) 0%, transparent 50%);
+}
+.events .container { position: relative; z-index: 1; }
+.events .section-label { color: var(--gold-light); }
+.events .section-title { color: var(--white); }
+.events .section-title em { color: var(--gold-light); }
+.events .section-desc { color: rgba(255,255,255,0.5); }
+.events-header { text-align: center; margin-bottom: 3.5rem; }
+.events-header .section-desc { margin: 0 auto; }
+
+.event-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+.event-chip {
+  padding: 0.7rem 1.5rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7);
+  cursor: default;
+  transition: all 0.4s var(--ease-out-expo);
+}
+.event-chip:hover {
+  background: rgba(201,169,110,0.15);
+  border-color: rgba(201,169,110,0.3);
+  color: var(--gold-light);
+  transform: translateY(-2px);
+}
+.event-chip .emoji { margin-right: 0.35rem; }
+
+/* ═══ PRICING ═══ */
+.pricing {
+  padding: 7rem 0;
+}
+.pricing-header { text-align: center; margin-bottom: 4rem; }
+.pricing-header .section-desc { margin: 0 auto; }
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.price-card {
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: 1.25rem;
+  padding: 2.5rem 2rem;
+  transition: all 0.5s var(--ease-out-expo);
+  position: relative;
+}
+.price-card.featured {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold), 0 16px 48px rgba(201,169,110,0.15);
+}
+.price-card.featured::before {
+  content: 'Популярный';
+  position: absolute;
+  top: -12px; left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--gold), var(--terracotta));
+  color: var(--white);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.price-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+}
+.price-tier {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+.price-amount {
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  font-weight: 300;
+  color: var(--charcoal);
+  margin-bottom: 0.25rem;
+}
+.price-amount span {
+  font-size: 1rem;
+  color: var(--warm-gray);
+  font-family: var(--font-body);
+  font-weight: 300;
+}
+.price-desc {
+  font-size: 0.825rem;
+  color: var(--warm-gray);
+  margin-bottom: 1.75rem;
+  font-weight: 300;
+}
+.price-features {
+  list-style: none;
+  margin-bottom: 2rem;
+}
+.price-features li {
+  font-size: 0.85rem;
+  color: var(--charcoal-soft);
+  padding: 0.4rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.price-features li::before {
+  content: '';
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: rgba(201,169,110,0.12);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%23C9A96E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.price-btn {
+  display: block;
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out-expo);
+  text-decoration: none;
+}
+.price-btn.primary {
+  background: var(--burgundy);
+  color: var(--white);
+  border: none;
+}
+.price-btn.primary:hover { background: var(--burgundy-deep); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(122,46,58,0.25); }
+.price-btn.outline {
+  background: transparent;
+  color: var(--charcoal);
+  border: 1.5px solid var(--sand);
+}
+.price-btn.outline:hover { border-color: var(--gold); color: var(--burgundy); }
+
+@media (max-width: 768px) { .pricing-grid { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto; } }
+
+/* ═══ FAQ ═══ */
+.faq {
+  padding: 6rem 0;
+  background: var(--ivory);
+}
+.faq-header { text-align: center; margin-bottom: 3rem; }
+.faq-header .section-desc { margin: 0 auto; }
+.faq-list {
+  max-width: 700px;
+  margin: 0 auto;
+}
+.faq-item {
+  border-bottom: 1px solid var(--sand);
+}
+.faq-q {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 1.25rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--charcoal);
+  gap: 1rem;
+}
+.faq-q .faq-icon {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--sand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s;
+  font-size: 1rem;
+  color: var(--gold);
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); background: var(--burgundy); border-color: var(--burgundy); color: var(--white); }
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s var(--ease-out-expo), padding 0.5s;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--warm-gray);
+  font-weight: 300;
+}
+.faq-item.open .faq-a {
+  max-height: 300px;
+  padding-bottom: 1.25rem;
+}
+
+/* ═══ CTA ═══ */
+.cta {
+  padding: 7rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-ornament {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 600px;
+  opacity: 0.03;
+  pointer-events: none;
+}
+.cta .container { position: relative; z-index: 1; }
+.cta .section-title {
+  font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  margin-bottom: 1rem;
+}
+.cta .section-desc {
+  margin: 0 auto 2.5rem;
+  text-align: center;
+}
+
+/* ═══ FOOTER ═══ */
+footer {
+  padding: 3rem 0;
+  border-top: 1px solid var(--sand);
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--burgundy);
+}
+.footer-brand span { color: var(--gold); }
+.footer-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.footer-links a {
+  font-size: 0.8rem;
+  color: var(--warm-gray);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--burgundy); }
+.footer-copy {
+  font-size: 0.75rem;
+  color: var(--warm-gray);
+}
+
+@media (max-width: 600px) {
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header id="header">
+  <div class="container">
+    <nav>
+      <a href="#" class="logo">Qona<span>q</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#features">Возможности</a></li>
+        <li><a href="#templates">Шаблоны</a></li>
+        <li><a href="#pricing">Тарифы</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#" class="nav-cta">Создать</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <svg class="hero-bg-ornament" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="200" cy="200" r="190" stroke="currentColor" stroke-width="0.5" fill="none" color="#C9A96E"/>
+    <circle cx="200" cy="200" r="150" stroke="currentColor" stroke-width="0.3" fill="none" color="#C9A96E"/>
+    <circle cx="200" cy="200" r="110" stroke="currentColor" stroke-width="0.5" fill="none" color="#7A2E3A"/>
+    <path d="M200 10 L210 190 L200 200 L190 190 Z" fill="#C9A96E" opacity="0.15"/>
+    <path d="M390 200 L210 210 L200 200 L210 190 Z" fill="#C9A96E" opacity="0.15"/>
+    <path d="M200 390 L190 210 L200 200 L210 210 Z" fill="#C9A96E" opacity="0.15"/>
+    <path d="M10 200 L190 190 L200 200 L190 210 Z" fill="#C9A96E" opacity="0.15"/>
+    <path d="M65 65 L195 185 L200 200 L185 195 Z" fill="#7A2E3A" opacity="0.08"/>
+    <path d="M335 65 L215 185 L200 200 L215 195 Z" fill="#7A2E3A" opacity="0.08"/>
+    <path d="M335 335 L215 215 L200 200 L215 205 Z" fill="#7A2E3A" opacity="0.08"/>
+    <path d="M65 335 L185 215 L200 200 L185 205 Z" fill="#7A2E3A" opacity="0.08"/>
+  </svg>
+
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">Для казахстанских мероприятий</div>
+        <h1>Приглашения,<br>которые <em>объединяют</em><br>и <span class="gold">координируют</span></h1>
+        <p class="hero-desc">Создайте цифровое приглашение за 10 минут. Соберите ответы гостей. Управляйте списками — всё в одном месте, на казахском и русском языках.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn-primary">
+            Создать приглашение
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#templates" class="btn-ghost">Смотреть шаблоны</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="invite-card">
+          <span class="invite-float-badge">Preview</span>
+          <svg class="invite-card-ornament" viewBox="0 0 60 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 10 Q15 0 30 10 Q45 20 60 10" stroke="#C9A96E" stroke-width="0.8" fill="none"/>
+            <circle cx="30" cy="10" r="2" fill="#C9A96E"/>
+          </svg>
+          <h3>Свадьба</h3>
+          <div class="names">Айдана <span class="amp">&</span> Нурлан</div>
+          <div class="date-line">15 июля 2026 · Алматы</div>
+          <div class="divider"></div>
+          <div class="rsvp-mock">
+            <span class="rsvp-btn-mock yes">Буду ✓</span>
+            <span class="rsvp-btn-mock no">Не смогу</span>
+            <span class="rsvp-btn-mock maybe">Под вопросом</span>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="avatars">
+            <div class="avatar" style="background: linear-gradient(135deg, var(--burgundy), var(--terracotta));"></div>
+            <div class="avatar" style="background: linear-gradient(135deg, var(--gold), var(--gold-light));"></div>
+            <div class="avatar" style="background: linear-gradient(135deg, var(--terracotta), var(--burgundy));"></div>
+          </div>
+          <div class="stat-text"><strong>127 гостей</strong><br>подтвердили участие</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MARQUEE ═══ -->
+<section class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">Свадьба <span class="dot"></span></span>
+    <span class="marquee-item">Қыз ұзату <span class="dot"></span></span>
+    <span class="marquee-item">Беташар <span class="dot"></span></span>
+    <span class="marquee-item">Құдалық <span class="dot"></span></span>
+    <span class="marquee-item">Юбилей <span class="dot"></span></span>
+    <span class="marquee-item">Сүндет той <span class="dot"></span></span>
+    <span class="marquee-item">День рождения <span class="dot"></span></span>
+    <span class="marquee-item">Тұсау кесу <span class="dot"></span></span>
+    <span class="marquee-item">Свадьба <span class="dot"></span></span>
+    <span class="marquee-item">Қыз ұзату <span class="dot"></span></span>
+    <span class="marquee-item">Беташар <span class="dot"></span></span>
+    <span class="marquee-item">Құдалық <span class="dot"></span></span>
+    <span class="marquee-item">Юбилей <span class="dot"></span></span>
+    <span class="marquee-item">Сүндет той <span class="dot"></span></span>
+    <span class="marquee-item">День рождения <span class="dot"></span></span>
+    <span class="marquee-item">Тұсау кесу <span class="dot"></span></span>
+  </div>
+</section>
+
+<!-- ═══ FEATURES ═══ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <div class="section-label">Возможности</div>
+      <h2 class="section-title">Не просто красивая страница —<br>а <em>центр координации</em> гостей</h2>
+      <p class="section-desc">Всё, что нужно для организации мероприятия: от стильного приглашения до сбора ответов и напоминаний.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon gold">🎨</div>
+        <h3>Локальные шаблоны</h3>
+        <p>Готовые сценарии для свадеб, қыз ұзату, беташар, юбилеев. Три стиля: modern minimal, elegant classic, ethnic national.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon burgundy">📋</div>
+        <h3>Мульти-события</h3>
+        <p>Несколько этапов в одном проекте: сбор гостей, церемония, банкет, afterparty — каждый со своим временем и локацией.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon terra">👨‍👩‍👧‍👦</div>
+        <h3>Семейные группы</h3>
+        <p>Приглашайте семьями, а не по одному. «Семья Нургалиевых — 4 человека» вместо четырёх отдельных записей.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon burgundy">🔗</div>
+        <h3>Персональные ссылки</h3>
+        <p>Каждый гость получает уникальную ссылку с персональным обращением. Одни видят весь той, другие — только ужин.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon gold">✅</div>
+        <h3>RSVP и дашборд</h3>
+        <p>Гости отвечают в один клик: буду, не смогу, под вопросом. Вы видите статусы, фильтруете, напоминаете.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon terra">🌐</div>
+        <h3>Қазақша & Русский</h3>
+        <p>Полная двуязычность: интерфейс, шаблоны, кнопки. Гость выбирает язык одним переключателем.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="how-it-works">
+  <div class="container">
+    <div class="steps-header reveal">
+      <div class="section-label">Как это работает</div>
+      <h2 class="section-title">От идеи до приглашения за <em>10 минут</em></h2>
+      <p class="section-desc">Четыре простых шага — и ваши гости получают стильное приглашение в WhatsApp или Telegram.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <h3>Выберите событие</h3>
+        <p>Свадьба, юбилей, қыз ұзату — выберите тип и шаблон</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <h3>Настройте детали</h3>
+        <p>Добавьте этапы, фото, программу, карту и дресс-код</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <h3>Пригласите гостей</h3>
+        <p>Отправьте персональные ссылки через мессенджеры</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">4</div>
+        <h3>Соберите ответы</h3>
+        <p>Отслеживайте RSVP, напоминайте, экспортируйте списки</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TEMPLATES ═══ -->
+<section class="templates" id="templates">
+  <div class="container">
+    <div class="templates-header reveal">
+      <div>
+        <div class="section-label">Шаблоны</div>
+        <h2 class="section-title">Три направления <em>дизайна</em></h2>
+      </div>
+      <div class="template-tags">
+        <button class="template-tag active">Все</button>
+        <button class="template-tag">Modern</button>
+        <button class="template-tag">Elegant</button>
+        <button class="template-tag">National</button>
+      </div>
+    </div>
+    <div class="templates-grid">
+      <div class="template-card reveal">
+        <div class="template-preview tp-modern">
+          <div class="tp-bg"></div>
+          <div class="tp-content">
+            <h4>Айдана & Нурлан</h4>
+            <div class="tp-divider"></div>
+            <div class="tp-date">15 · 07 · 2026</div>
+          </div>
+        </div>
+        <div class="template-label">
+          <span>Modern Minimal</span>
+          <span class="tl-badge free">Бесплатно</span>
+        </div>
+      </div>
+      <div class="template-card reveal">
+        <div class="template-preview tp-elegant">
+          <div class="tp-bg"></div>
+          <div class="tp-content">
+            <h4>Айдана & Нурлан</h4>
+            <div class="tp-divider"></div>
+            <div class="tp-date">15 · 07 · 2026</div>
+          </div>
+        </div>
+        <div class="template-label">
+          <span>Elegant Classic</span>
+          <span class="tl-badge premium">Premium</span>
+        </div>
+      </div>
+      <div class="template-card reveal">
+        <div class="template-preview tp-national">
+          <div class="tp-bg"></div>
+          <div class="tp-content">
+            <h4>Айдана & Нұрлан</h4>
+            <div class="tp-divider"></div>
+            <div class="tp-date">15 · 07 · 2026</div>
+          </div>
+        </div>
+        <div class="template-label">
+          <span>Этно / National</span>
+          <span class="tl-badge premium">Premium</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EVENTS ═══ -->
+<section class="events" id="events">
+  <div class="container">
+    <div class="events-header reveal">
+      <div class="section-label">Мероприятия</div>
+      <h2 class="section-title">Для <em>любого</em> торжества</h2>
+      <p class="section-desc">Готовые сценарии с локальными формулировками — не просто «Wedding», а под ваш формат события.</p>
+    </div>
+    <div class="event-types reveal">
+      <span class="event-chip"><span class="emoji">💍</span>Свадьба / Той</span>
+      <span class="event-chip"><span class="emoji">👰</span>Қыз ұзату</span>
+      <span class="event-chip"><span class="emoji">🎭</span>Беташар</span>
+      <span class="event-chip"><span class="emoji">🤝</span>Құдалық</span>
+      <span class="event-chip"><span class="emoji">🎂</span>Юбилей</span>
+      <span class="event-chip"><span class="emoji">👶</span>Сүндет той</span>
+      <span class="event-chip"><span class="emoji">🎈</span>День рождения</span>
+      <span class="event-chip"><span class="emoji">👣</span>Тұсау кесу</span>
+      <span class="event-chip"><span class="emoji">🏠</span>Новоселье</span>
+      <span class="event-chip"><span class="emoji">🎓</span>Выпускной</span>
+      <span class="event-chip"><span class="emoji">✨</span>Другое</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <div class="section-label">Тарифы</div>
+      <h2 class="section-title">Начните <em>бесплатно</em></h2>
+      <p class="section-desc">Базовый шаблон бесплатный. Расширяйте возможности по мере необходимости.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-tier">Бесплатно</div>
+        <div class="price-amount">0 ₸</div>
+        <div class="price-desc">Для небольшого события</div>
+        <ul class="price-features">
+          <li>1 базовый шаблон</li>
+          <li>До 50 гостей</li>
+          <li>RSVP с 3 статусами</li>
+          <li>Ссылка для мессенджеров</li>
+          <li>Русский и казахский</li>
+        </ul>
+        <a href="#" class="price-btn outline">Начать бесплатно</a>
+      </div>
+      <div class="price-card featured reveal">
+        <div class="price-tier">Стандарт</div>
+        <div class="price-amount">4 990 <span>₸</span></div>
+        <div class="price-desc">Для свадьбы или юбилея</div>
+        <ul class="price-features">
+          <li>Все premium шаблоны</li>
+          <li>До 300 гостей</li>
+          <li>Мульти-события</li>
+          <li>Семейные группы</li>
+          <li>PDF-экспорт</li>
+          <li>Дашборд организатора</li>
+        </ul>
+        <a href="#" class="price-btn primary">Выбрать</a>
+      </div>
+      <div class="price-card reveal">
+        <div class="price-tier">Агентство</div>
+        <div class="price-amount">14 990 <span>₸ / мес</span></div>
+        <div class="price-desc">Для event-организаторов</div>
+        <ul class="price-features">
+          <li>Безлимит гостей</li>
+          <li>Безлимит проектов</li>
+          <li>Соорганизаторы</li>
+          <li>White-label</li>
+          <li>Приоритетная поддержка</li>
+          <li>CSV / Excel экспорт</li>
+        </ul>
+        <a href="#" class="price-btn outline">Связаться</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-header reveal">
+      <div class="section-label">Вопросы</div>
+      <h2 class="section-title">Частые <em>вопросы</em></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Нужно ли скачивать приложение?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Нет, Qonaq работает прямо в браузере. Гости просто открывают ссылку в WhatsApp или Telegram — никаких загрузок, регистраций или дополнительных шагов.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Смогут ли старшие родственники разобраться?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Да. Мы специально продумали режим для старших гостей: крупный шрифт, минимум элементов, понятная кнопка «Буду» — без лишних анимаций и сложных интерфейсов.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Можно ли сделать приглашение на казахском?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Конечно. Платформа поддерживает казахский и русский языки. Вы можете создать две версии текста, а гость переключает язык одним нажатием.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Что если у нас несколько событий: қыз ұзату + той + беташар?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Именно для этого и создан Qonaq. Вы добавляете несколько этапов в один проект, а каждый гость видит только те события, на которые приглашён. Каждый этап — своё время, место и карта.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Можно ли скачать приглашение как PDF?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Да. Для гостей, которым удобнее получить файл или распечатку, доступна PDF-версия и JPG-превью с крупным шрифтом.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section class="cta">
+  <svg class="cta-ornament" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="200" cy="200" r="190" stroke="#C9A96E" stroke-width="0.5" fill="none"/>
+    <circle cx="200" cy="200" r="140" stroke="#7A2E3A" stroke-width="0.3" fill="none"/>
+    <circle cx="200" cy="200" r="90" stroke="#C9A96E" stroke-width="0.5" fill="none"/>
+  </svg>
+  <div class="container">
+    <div class="section-label">Готовы начать?</div>
+    <h2 class="section-title reveal">Создайте приглашение,<br>которое <em>запомнят</em></h2>
+    <p class="section-desc reveal">Первый шаблон бесплатно. Без приложений, без сложностей — только стильное приглашение и удобная координация гостей.</p>
+    <a href="#" class="btn-primary reveal">
+      Создать приглашение
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">Qona<span>q</span></div>
+      <ul class="footer-links">
+        <li><a href="#">О нас</a></li>
+        <li><a href="#">Шаблоны</a></li>
+        <li><a href="#">Тарифы</a></li>
+        <li><a href="#">Поддержка</a></li>
+      </ul>
+      <div class="footer-copy">&copy; 2026 Qonaq. Астана, Казахстан</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Header scroll
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Mobile nav
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  hamburger.classList.remove('active');
+  navLinks.classList.remove('open');
+}));
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(el => observer.observe(el));
+
+// FAQ
+document.querySelectorAll('.faq-q').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    document.querySelectorAll('.faq-item').forEach(i => { if (i !== item) i.classList.remove('open'); });
+    item.classList.toggle('open');
+  });
+});
+
+// Template tags
+document.querySelectorAll('.template-tag').forEach(tag => {
+  tag.addEventListener('click', () => {
+    document.querySelectorAll('.template-tag').forEach(t => t.classList.remove('active'));
+    tag.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

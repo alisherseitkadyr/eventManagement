@@ -1,5 +1,5 @@
 import type { EventProject, EventStats, CreateEventInput } from "./types";
-import { api, useBackendApi } from "@/shared/lib/api";
+import { api } from "@/shared/lib/api";
 
 // ═══════════════════════════════════════════
 // Mock Data (replace with real API calls)
@@ -69,57 +69,31 @@ export const MOCK_STATS: EventStats = {
 // ═══════════════════════════════════════════
 export const eventsApi = {
   listAll: async (): Promise<EventProject[]> => {
-    if (useBackendApi) {
-      return api.get<EventProject[]>("/events");
-    }
     return [MOCK_EVENT];
   },
 
   getById: async (id: string): Promise<EventProject> => {
-    if (useBackendApi) {
-      return api.get<EventProject>(`/events/${id}`);
-    }
-
     return { ...MOCK_EVENT, id };
   },
 
   getStats: async (id: string): Promise<EventStats> => {
-    if (useBackendApi) {
-      return api.get<EventStats>(`/events/${id}/stats`);
-    }
-
+    void id;
     return MOCK_STATS;
   },
 
   create: async (input: CreateEventInput): Promise<EventProject> => {
-    if (!useBackendApi) {
-      throw new Error("Creating events requires backend mode");
-    }
-
     return api.post<EventProject>("/events", input);
   },
 
   update: async (id: string, data: Partial<EventProject>): Promise<EventProject> => {
-    if (!useBackendApi) {
-      return { ...MOCK_EVENT, ...data, id, updatedAt: new Date().toISOString() };
-    }
-
-    return api.patch<EventProject>(`/events/${id}`, data);
+    return { ...MOCK_EVENT, ...data, id, updatedAt: new Date().toISOString() };
   },
 
   publish: async (id: string): Promise<void> => {
-    if (!useBackendApi) {
-      return;
-    }
-
-    return api.post(`/events/${id}/publish`);
+    void id;
   },
 
   unpublish: async (id: string): Promise<void> => {
-    if (!useBackendApi) {
-      return;
-    }
-
-    return api.post(`/events/${id}/unpublish`);
+    void id;
   },
 };

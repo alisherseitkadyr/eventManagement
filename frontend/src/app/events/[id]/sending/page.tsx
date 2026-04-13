@@ -1,6 +1,5 @@
 import { SendingView } from "@/features/events/components/sending-view";
-import { eventsApi } from "@/features/events/api";
-import { guestsApi } from "@/features/guests/api";
+import { getEventById, getEventStats, listGuestsByEvent } from "@/shared/lib/mock-store";
 
 interface SendingPageProps {
   params: Promise<{ id: string }>;
@@ -8,11 +7,9 @@ interface SendingPageProps {
 
 export default async function SendingPage({ params }: SendingPageProps) {
   const { id } = await params;
-  const [event, stats, guests] = await Promise.all([
-    eventsApi.getById(id),
-    eventsApi.getStats(id),
-    guestsApi.getByEvent(id),
-  ]);
+  const event = getEventById(id);
+  const stats = getEventStats(id);
+  const guests = listGuestsByEvent(id);
 
   return <SendingView event={event} guests={guests} stats={stats} />;
 }

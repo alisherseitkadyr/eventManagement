@@ -1,6 +1,5 @@
 import { EventDashboardView } from "@/features/events/components/event-dashboard";
-import { eventsApi } from "@/features/events/api";
-import { guestsApi } from "@/features/guests/api";
+import { getEventById, getEventStats, listGuestsByEvent } from "@/shared/lib/mock-store";
 
 interface EventPageProps {
   params: Promise<{ id: string }>;
@@ -8,11 +7,9 @@ interface EventPageProps {
 
 export default async function EventPage({ params }: EventPageProps) {
   const { id } = await params;
-  const [event, stats, guests] = await Promise.all([
-    eventsApi.getById(id),
-    eventsApi.getStats(id),
-    guestsApi.getByEvent(id),
-  ]);
+  const event = getEventById(id);
+  const stats = getEventStats(id);
+  const guests = listGuestsByEvent(id);
 
   return <EventDashboardView event={event} guests={guests} stats={stats} />;
 }
