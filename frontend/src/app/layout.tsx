@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
+import { RootShell } from "@/shared/components/layout/root-shell";
 
 export const metadata: Metadata = {
   title: "Qonaq",
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru">
-      <body>{children}</body>
+      <body>
+        <RootShell>{children}</RootShell>
+      </body>
     </html>
   );
 }

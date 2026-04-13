@@ -1,3 +1,11 @@
+// ═══════════════════════════════════════════
+// Base API Client
+// ═══════════════════════════════════════════
+
+const DEFAULT_SERVER_API_URL = "http://127.0.0.1:8080";
+
+export const useBackendApi = (process.env.NEXT_PUBLIC_API_MODE ?? "mock") === "backend";
+
 export type QueryValue = string | number | boolean | null | undefined;
 export type QueryParams = Record<string, QueryValue>;
 
@@ -17,8 +25,13 @@ async function baseFetch<T>(
   options: FetchOptions = {}
 ): Promise<T> {
   const { params, ...fetchOptions } = options;
-  let url = `/api${endpoint}`;
+  const apiBase = useBackendApi
+    ? typeof window !== "undefined"
+      ? "/api"
+      : (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || DEFAULT_SERVER_API_URL).replace(/\/$/, "")
+    : "/api";
 
+  let url = `${apiBase}${endpoint}`;
   if (params) {
     const searchParams = new URLSearchParams();
 
@@ -50,6 +63,7 @@ async function baseFetch<T>(
     throw new ApiError(response.status, errorBody || response.statusText);
   }
 
+  // Handle 204 No Content
   if (response.status === 204) {
     return undefined as T;
   }

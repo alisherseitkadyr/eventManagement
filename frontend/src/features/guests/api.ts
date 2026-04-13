@@ -1,4 +1,5 @@
 import type { Guest, GuestFilters, AddGuestInput } from "./types";
+import { api, useBackendApi } from "@/shared/lib/api";
 
 // ═══════════════════════════════════════════
 // Mock Data
@@ -21,6 +22,10 @@ export const MOCK_GUESTS: Guest[] = [
 // ═══════════════════════════════════════════
 export const guestsApi = {
   getByEvent: async (eventId: string, filters?: GuestFilters): Promise<Guest[]> => {
+    if (useBackendApi) {
+      return api.get<Guest[]>(`/events/${eventId}/guests`, filters ? { ...filters } : undefined);
+    }
+
     let guests = MOCK_GUESTS.filter((g) => g.eventId === eventId);
     if (filters?.status) guests = guests.filter((g) => g.status === filters.status);
     if (filters?.side) guests = guests.filter((g) => g.side === filters.side);
@@ -33,48 +38,70 @@ export const guestsApi = {
   },
 
   getByToken: async (token: string): Promise<Guest> => {
+    if (useBackendApi) {
+      const invitation = await api.get<{ eventId?: string; guest: Guest } | { event: unknown; guest: Guest }>(
+        `/i/${token}`
+      );
+      return invitation.guest;
+    }
+
     const guest = MOCK_GUESTS.find((g) => g.token === token);
     if (!guest) throw new Error("Guest not found");
     return guest;
   },
 
   add: async (eventId: string, input: AddGuestInput): Promise<Guest> => {
-    return {
-      id: `gst_${Date.now()}`,
-      eventId,
-      name: input.name,
-      count: input.count,
-      side: input.side,
-      category: input.category,
-      status: "pending",
-      phone: input.phone,
-      token: `invite_${Date.now()}`,
-      isVip: input.isVip ?? false,
-      isElder: input.isElder ?? false,
-      hasChildren: false,
-      assignedStageIds: input.assignedStageIds ?? [],
-    };
+    if (!useBackendApi) {
+      return {
+        id: `gst_${Date.now()}`,
+        eventId,
+        name: input.name,
+        count: input.count,
+        side: input.side,
+        category: input.category,
+        status: "pending",
+        phone: input.phone,
+        token: `invite_${Date.now()}`,
+        isVip: input.isVip ?? false,
+        isElder: input.isElder ?? false,
+        hasChildren: false,
+        assignedStageIds: input.assignedStageIds ?? [],
+      };
+    }
+
+    return api.post<Guest>(`/events/${eventId}/guests`, input);
   },
 
   update: async (guestId: string, data: Partial<Guest>): Promise<Guest> => {
-    const guest = MOCK_GUESTS.find((item) => item.id === guestId);
-    if (!guest) {
-      throw new Error("Guest not found");
+    if (!useBackendApi) {
+      const guest = MOCK_GUESTS.find((item) => item.id === guestId);
+      if (!guest) {
+        throw new Error("Guest not found");
+      }
+
+      return { ...guest, ...data };
     }
 
-    return { ...guest, ...data };
+    return api.patch<Guest>(`/guests/${guestId}`, data);
   },
 
   delete: async (guestId: string): Promise<void> => {
-    void guestId;
+    if (!useBackendApi) {
+      return;
+    }
+
+    return api.delete(`/guests/${guestId}`);
   },
 
   sendReminder: async (guestId: string): Promise<void> => {
-    void guestId;
+    if (!useBackendApi) {
+      return;
+    }
+
+    return api.post(`/guests/${guestId}/remind`);
   },
 
   exportCsv: async (eventId: string): Promise<Blob> => {
-    void eventId;
     // Would return blob from API
     return new Blob([""], { type: "text/csv" });
   },

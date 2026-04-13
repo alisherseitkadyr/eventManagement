@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Icon, type IconName } from "@/shared/components/ui/icon";
 import { Avatar } from "@/shared/components/ui";
+import { Icon, type IconName } from "@/shared/components/ui/icon";
 import type { EventProject } from "@/features/events/types";
 import { eventTypeEmojis } from "@/shared/lib/utils";
 import styles from "./sidebar.module.css";
@@ -17,13 +17,20 @@ interface NavItem {
 }
 
 interface SidebarProps {
-  eventId: string;
-  eventName: string;
-  eventDate: string;
-  eventInitials: string;
+  eventId?: string;
+  eventName?: string;
+  eventDate?: string;
+  eventInitials?: string;
   allEvents?: EventProject[];
   mobileOpen?: boolean;
   onClose?: () => void;
+}
+
+function useEventId(): string | null {
+  const pathname = usePathname();
+  const match = pathname?.match(/^\/events\/([^/]+)/);
+  const id = match?.[1];
+  return id && id !== "new" ? id : null;
 }
 
 export function Sidebar({
@@ -37,18 +44,39 @@ export function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const routeEventId = useEventId();
   const [switcherOpen, setSwitcherOpen] = useState(false);
 
-  const items: NavItem[] = [
-    { id: "dashboard", icon: "home", label: "Дашборд", href: `/events/${eventId}` },
-    { id: "guests", icon: "users", label: "Гости", href: `/events/${eventId}/guests` },
-    { id: "constructor", icon: "edit", label: "Конструктор", href: `/events/${eventId}/constructor` },
-    { id: "preview", icon: "eye", label: "Предпросмотр", href: `/events/${eventId}/preview` },
-    { id: "sending", icon: "send", label: "Рассылка", href: `/events/${eventId}/sending` },
-  ];
+  const currentEventId = eventId ?? routeEventId;
+  const isEventMode = Boolean(currentEventId);
+
+  const items: NavItem[] = isEventMode && currentEventId
+    ? [
+        { id: "dashboard", icon: "home", label: "Dashboard", href: `/events/${currentEventId}` },
+        { id: "guests", icon: "users", label: "Guests", href: `/events/${currentEventId}/guests` },
+        { id: "constructor", icon: "edit", label: "Constructor", href: `/events/${currentEventId}/constructor` },
+        { id: "preview", icon: "eye", label: "Preview", href: `/events/${currentEventId}/preview` },
+        { id: "sending", icon: "send", label: "Sending", href: `/events/${currentEventId}/sending` },
+      ]
+    : [
+        { id: "home", icon: "home", label: "Home", href: "/" },
+        { id: "templates", icon: "grid", label: "Templates", href: "/templates" },
+        { id: "create", icon: "plus", label: "Create Invitation", href: "/events/new" },
+      ];
 
   const isActive = (href: string) => {
-    if (href === `/events/${eventId}`) return pathname === href;
+    if (!pathname) {
+      return false;
+    }
+
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    if (isEventMode && currentEventId && href === `/events/${currentEventId}`) {
+      return pathname === href;
+    }
+
     return pathname.startsWith(href);
   };
 
@@ -58,67 +86,98 @@ export function Sidebar({
     router.push(`/events/${id}`);
   };
 
+  const hasEventMeta = Boolean(isEventMode && eventName && eventDate && eventInitials);
+
   return (
     <aside className={`${styles.sidebar} ${mobileOpen ? styles.open : ""}`}>
-      {/* Logo — fixed top */}
       <div className={styles.logoArea}>
-        <Link href={`/events/${eventId}`} className={styles.logo} onClick={onClose}>
+        <Link
+          href={isEventMode && currentEventId ? `/events/${currentEventId}` : "/"}
+          className={styles.logo}
+          onClick={onClose}
+        >
           Qona<span className={styles.logoAccent}>q</span>
         </Link>
-        <div className={styles.logoSub}>Панель организатора</div>
+        <div className={styles.logoSub}>Organizer Panel</div>
       </div>
 
-      {/* Scrollable middle: switcher + nav */}
       <div className={styles.scrollableMiddle}>
-        {/* Event switcher */}
-        <div className={styles.eventSelector}>
-          <button
-            className={`${styles.switcherTrigger} ${switcherOpen ? styles.switcherOpen : ""}`}
-            onClick={() => setSwitcherOpen((v) => !v)}
-          >
-            <div className={styles.eventAvatar}>{eventInitials}</div>
-            <div className={styles.eventInfo}>
-              <div className={styles.eventName}>{eventName}</div>
-              <div className={styles.eventDate}>{eventDate}</div>
-            </div>
-            <span style={{ transform: switcherOpen ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 200ms", display: "flex" }}>
-              <Icon name="chevron-right" size={14} color="var(--warm-gray)" />
-            </span>
-          </button>
+        {isEventMode ? (
+          <div className={styles.backArea}>
+            <Link href="/" className={styles.backLink} onClick={onClose}>
+              <Icon name="chevron-left" size={14} color="currentColor" />
+              <span>Back Home</span>
+            </Link>
+            <div className={styles.sectionLabel}>Current Event</div>
+          </div>
+        ) : (
+          <div className={styles.backArea}>
+            <div className={styles.sectionLabel}>Workspace</div>
+          </div>
+        )}
 
-          {switcherOpen && (
-            <div className={styles.switcherList}>
-              {allEvents.map((ev) => (
-                <button
-                  key={ev.id}
-                  className={`${styles.switcherItem} ${ev.id === eventId ? styles.switcherItemActive : ""}`}
-                  onClick={() => handleSwitchEvent(ev.id)}
-                >
-                  <span style={{ fontSize: 16, flexShrink: 0 }}>
-                    {eventTypeEmojis[ev.type] ?? "🎉"}
-                  </span>
-                  <span className={styles.switcherItemName}>
-                    {ev.title?.ru || ev.id}
-                  </span>
-                  {ev.id === eventId && (
-                    <Icon name="check" size={13} color="var(--burgundy)" />
-                  )}
-                </button>
-              ))}
-              <div className={styles.switcherDivider} />
-              <Link
-                href="/events/new"
-                className={styles.switcherNewItem}
-                onClick={() => { setSwitcherOpen(false); onClose?.(); }}
+        {hasEventMeta ? (
+          <div className={styles.eventSelector}>
+            <button
+              type="button"
+              className={`${styles.switcherTrigger} ${switcherOpen ? styles.switcherOpen : ""}`}
+              onClick={() => setSwitcherOpen((value) => !value)}
+            >
+              <div className={styles.eventAvatar}>{eventInitials}</div>
+              <div className={styles.eventInfo}>
+                <div className={styles.eventName}>{eventName}</div>
+                <div className={styles.eventDate}>{eventDate}</div>
+              </div>
+              <span
+                style={{
+                  transform: switcherOpen ? "rotate(90deg)" : "rotate(0deg)",
+                  transition: "transform 200ms",
+                  display: "flex",
+                }}
               >
-                <Icon name="plus" size={14} color="currentColor" />
-                Создать событие
-              </Link>
-            </div>
-          )}
-        </div>
+                <Icon name="chevron-right" size={14} color="var(--warm-gray)" />
+              </span>
+            </button>
 
-        {/* Navigation */}
+            {switcherOpen ? (
+              <div className={styles.switcherList}>
+                {allEvents.map((event) => (
+                  <button
+                    key={event.id}
+                    type="button"
+                    className={`${styles.switcherItem} ${
+                      event.id === currentEventId ? styles.switcherItemActive : ""
+                    }`}
+                    onClick={() => handleSwitchEvent(event.id)}
+                  >
+                    <span style={{ fontSize: 16, flexShrink: 0 }}>
+                      {eventTypeEmojis[event.type] ?? "🎉"}
+                    </span>
+                    <span className={styles.switcherItemName}>
+                      {event.title?.ru || event.id}
+                    </span>
+                    {event.id === currentEventId ? (
+                      <Icon name="check" size={13} color="var(--burgundy)" />
+                    ) : null}
+                  </button>
+                ))}
+                <div className={styles.switcherDivider} />
+                <Link
+                  href="/events/new"
+                  className={styles.switcherNewItem}
+                  onClick={() => {
+                    setSwitcherOpen(false);
+                    onClose?.();
+                  }}
+                >
+                  <Icon name="plus" size={14} color="currentColor" />
+                  Create Event
+                </Link>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
         <nav className={styles.nav}>
           {items.map((item) => (
             <Link
@@ -138,14 +197,13 @@ export function Sidebar({
         </nav>
       </div>
 
-      {/* User area — fixed bottom */}
       <div className={styles.userArea}>
-        <Avatar name="Айгерим" size={32} gradient={["var(--gold)", "var(--terra)"]} />
+        <Avatar name="Aigerim" size={32} gradient={["var(--gold)", "var(--terra)"]} />
         <div className={styles.userInfo}>
-          <div className={styles.userName}>Айгерим К.</div>
-          <div className={styles.userRole}>Организатор</div>
+          <div className={styles.userName}>Aigerim K.</div>
+          <div className={styles.userRole}>Organizer</div>
         </div>
-        <button className={styles.settingsBtn} aria-label="Settings">
+        <button type="button" className={styles.settingsBtn} aria-label="Settings">
           <Icon name="settings" size={16} color="var(--warm-gray)" />
         </button>
       </div>
