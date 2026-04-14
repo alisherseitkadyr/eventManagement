@@ -2,13 +2,11 @@
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { Card, Button } from "@/shared/components/ui";
+import { Card } from "@/shared/components/ui";
 import { Icon } from "@/shared/components/ui/icon";
-import { formatDate } from "@/shared/lib/utils";
 import type { EventProject, EventStats } from "@/features/events/types";
 import type { Guest } from "@/features/guests/types";
 import { StatsGrid } from "./StatsGrid";
-import { StagesList } from "./StagesList";
 import { RecentResponses } from "./RecentResponses";
 import { RSVPProgressBar } from "./RSVPProgressBar";
 import { PageHeader, pageStyle } from "./organizer-ui";
@@ -44,24 +42,13 @@ export function EventDashboardView({
   return (
     <div style={pageStyle}>
       <PageHeader
-        title={
-          <>
-            {event.title.ru}{" "}
-            <span style={{ color: "var(--burgundy)", fontStyle: "italic" }}>MVP</span>
-          </>
-        }
-        subtitle={`${formatDate(event.stages[0]?.date ?? event.createdAt, "ru")} · ${event.stages.length} этапа · ${event.stages[0]?.place ?? "Казахстан"}`}
+        title={event.title.ru}
+        subtitle={event.title.kz}
         actions={
-          <>
-            <Link href={`/events/${event.id}/sending`} style={linkButtonStyle("ghost")}>
-              <Icon name="download" size={15} color="currentColor" />
-              Экспорт
-            </Link>
-            <Link href={`/events/${event.id}/sending`} style={linkButtonStyle("primary")}>
-              <Icon name="send" size={15} color="currentColor" />
-              Разослать
-            </Link>
-          </>
+          <Link href={`/events/${event.id}/constructor`} style={linkButtonStyle("primary")}>
+            <Icon name="edit" size={15} color="currentColor" />
+            Конструктор
+          </Link>
         }
       />
 
@@ -72,6 +59,7 @@ export function EventDashboardView({
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
           gap: 20,
+          marginTop: 20,
         }}
       >
         <Card>
@@ -109,31 +97,9 @@ export function EventDashboardView({
         </Card>
 
         <Card>
-          <h3
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: 22,
-              fontWeight: 500,
-              color: "var(--charcoal)",
-              marginBottom: 16,
-            }}
-          >
-            Этапы события
-          </h3>
-          <StagesList stages={event.stages} />
-          <Button
-            variant="sm"
-            style={{ width: "100%", justifyContent: "center", marginTop: 14 }}
-          >
-            <Icon name="plus" size={14} color="currentColor" />
-            Добавить этап
-          </Button>
+          <RSVPProgressBar stats={stats} />
         </Card>
       </div>
-
-      <Card style={{ marginTop: 20 }}>
-        <RSVPProgressBar stats={stats} />
-      </Card>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { ConstructorView } from "@/features/events/components/constructor-view";
 import { eventsApi } from "@/features/events/api";
-import { guestsApi } from "@/features/guests/api";
 
 interface ConstructorPageProps {
   params: Promise<{ id: string }>;
@@ -8,7 +7,7 @@ interface ConstructorPageProps {
 
 export default async function ConstructorPage({ params }: ConstructorPageProps) {
   const { id } = await params;
-  const [event, guests] = await Promise.all([eventsApi.getById(id), guestsApi.getByEvent(id)]);
+  const event = await eventsApi.getById(id);
 
-  return <ConstructorView event={event} guests={guests} />;
+  return <ConstructorView event={event} />;
 }
