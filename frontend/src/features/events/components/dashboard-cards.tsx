@@ -7,7 +7,6 @@ import { eventTypeLabels, eventTypeEmojis } from "@/shared/lib/utils";
 import { Icon } from "@/shared/components/ui/icon";
 
 export function EventCard({ event }: { event: EventProject }) {
-  const firstStage = event.stages?.[0];
   return (
     <Link
       href={`/events/${event.id}`}
@@ -77,7 +76,6 @@ export function EventCard({ event }: { event: EventProject }) {
         </div>
         <div style={{ fontSize: 13, color: "var(--warm-gray)" }}>
           {eventTypeLabels[event.type]?.ru}
-          {firstStage ? ` · ${firstStage.date}` : ""}
         </div>
       </div>
     </Link>
@@ -140,69 +138,6 @@ export function CreateScratchCard() {
       <div style={{ padding: "1.25rem" }}>
         <div style={{ fontSize: 14, color: "var(--warm-gray)", lineHeight: 1.5 }}>
           Начните с чистого холста и создайте уникальное приглашение
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-export function TemplateCard({
-  title,
-  description,
-  emoji,
-  href,
-}: {
-  title: string;
-  description: string;
-  emoji: string;
-  href: string;
-}) {
-  return (
-    <Link
-      href={href}
-      style={{
-        display: "block",
-        background: "var(--white)",
-        borderRadius: 20,
-        border: "1px solid var(--sand)",
-        overflow: "hidden",
-        textDecoration: "none",
-        color: "inherit",
-        transition: "transform 0.2s, box-shadow 0.2s",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-2px)";
-        e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.08)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "none";
-      }}
-    >
-      <div
-        style={{
-          height: 140,
-          background: "linear-gradient(135deg, var(--terra), var(--burgundy))",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ fontSize: 40 }}>{emoji}</div>
-      </div>
-      <div style={{ padding: "1.25rem" }}>
-        <div
-          style={{
-            fontSize: 16,
-            fontWeight: 600,
-            color: "var(--charcoal)",
-            marginBottom: 4,
-          }}
-        >
-          {title}
-        </div>
-        <div style={{ fontSize: 13, color: "var(--warm-gray)", lineHeight: 1.4 }}>
-          {description}
         </div>
       </div>
     </Link>

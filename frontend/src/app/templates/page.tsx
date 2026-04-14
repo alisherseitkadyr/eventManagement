@@ -1,33 +1,12 @@
-import { CreateScratchCard, TemplateCard, UploadDesignCard } from "@/features/events/components/dashboard-cards";
+import { templatesApi } from "@/features/templates/api";
+import { TemplateCard } from "@/features/templates/components/TemplateCard";
+import { CreateScratchCard, UploadDesignCard } from "@/features/events/components/dashboard-cards";
 
-const TEMPLATES = [
-  {
-    title: "Свадебное приглашение",
-    description: "Элегантный дизайн для вашего особенного дня",
-    emoji: "💍",
-    href: "/events/new?template=wedding",
-  },
-  {
-    title: "День рождения",
-    description: "Яркое и праздничное приглашение",
-    emoji: "🎂",
-    href: "/events/new?template=birthday",
-  },
-  {
-    title: "Корпоративное мероприятие",
-    description: "Профессиональный стиль для деловых встреч",
-    emoji: "💼",
-    href: "/events/new?template=corporate",
-  },
-  {
-    title: "Вечеринка",
-    description: "Веселое приглашение для встречи с друзьями",
-    emoji: "🎉",
-    href: "/events/new?template=party",
-  },
-];
+export const dynamic = "force-dynamic";
 
-export default function TemplatesPage() {
+export default async function TemplatesPage() {
+  const templates = await templatesApi.listAll();
+
   return (
     <div
       style={{
@@ -56,7 +35,7 @@ export default function TemplatesPage() {
           </p>
         </div>
 
-        {/* Start from scratch */}
+        {/* Start fresh */}
         <div style={{ marginBottom: "3rem" }}>
           <h2
             style={{
@@ -82,7 +61,7 @@ export default function TemplatesPage() {
           </div>
         </div>
 
-        {/* Template gallery */}
+        {/* Template gallery — live from backend */}
         <div>
           <h2
             style={{
@@ -94,6 +73,9 @@ export default function TemplatesPage() {
             }}
           >
             Ready-made templates
+            <span style={{ marginLeft: 10, fontSize: 13, fontWeight: 400, color: "var(--warm-gray)" }}>
+              {templates.length}
+            </span>
           </h2>
           <div
             style={{
@@ -102,8 +84,8 @@ export default function TemplatesPage() {
               gap: 20,
             }}
           >
-            {TEMPLATES.map((t) => (
-              <TemplateCard key={t.title} {...t} />
+            {templates.map((t) => (
+              <TemplateCard key={t.id} template={t} />
             ))}
           </div>
         </div>

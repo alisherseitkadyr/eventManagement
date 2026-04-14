@@ -6,24 +6,16 @@ import { formatDate } from "@/shared/lib/utils";
 import type { Language, TemplateStyle } from "@/shared/types/common";
 import { defaultConstructorBlocks, type ConstructorBlock } from "@/features/constructor/store";
 import type { EventProject } from "@/features/events/types";
-import type { Guest } from "@/features/guests/types";
 import { BlockList } from "@/features/constructor/components/BlockList";
 import { StyleSettings } from "@/features/constructor/components/StyleSettings";
-import { PageHeader, pageStyle, getVisibleStages } from "./organizer-ui";
+import { PageHeader, pageStyle } from "./organizer-ui";
 
-export function ConstructorView({
-  event,
-  guests,
-}: {
-  event: EventProject;
-  guests: Guest[];
-}) {
+export function ConstructorView({ event }: { event: EventProject }) {
   const [blocks, setBlocks] = useState<ConstructorBlock[]>(defaultConstructorBlocks);
   const [activeStyle, setActiveStyle] = useState<TemplateStyle>(event.templateStyle);
   const [activeLanguage, setActiveLanguage] = useState<Language | "both">("both");
   const [accentColor, setAccentColor] = useState(event.accentColor);
-  const sampleGuest = guests[0];
-  const sampleStages = getVisibleStages(event, sampleGuest);
+  const sampleStages = event.stages;
 
   const toggleBlock = (blockId: ConstructorBlock["id"]) => {
     setBlocks((current) =>

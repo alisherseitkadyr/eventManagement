@@ -1,7 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
 import { SectionTitle } from "@/shared/components/ui";
-import type { EventProject, EventStage } from "@/features/events/types";
-import type { Guest } from "@/features/guests/types";
 
 export const pageStyle: CSSProperties = {
   padding: "clamp(1rem, 3vw, 2rem) clamp(1rem, 4vw, 2.5rem)",
@@ -13,13 +11,6 @@ const subheadStyle: CSSProperties = {
   color: "var(--warm-gray)",
   marginTop: 6,
 };
-
-export function getVisibleStages(event: EventProject, guest?: Guest): EventStage[] {
-  if (!guest || guest.assignedStageIds.length === 0) {
-    return event.stages;
-  }
-  return event.stages.filter((stage) => guest.assignedStageIds.includes(stage.id));
-}
 
 export function PageHeader({
   title,
