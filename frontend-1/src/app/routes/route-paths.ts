@@ -1,7 +1,10 @@
+
 export const routePaths = {
   landing: '/',
   signIn: '/sign-in',
   signUp: '/sign-up',
+  templates: '/templates',
+  templatePreview: '/templates/:templateId',
   dashboard: '/dashboard',
   eventCreate: '/events/new',
   eventDetails: '/events/:eventId',
@@ -16,6 +19,7 @@ export const routePaths = {
 } as const
 
 export const routeBuilders = {
+  templatePreview: (templateId: string) => `/templates/${templateId}`,
   eventDetails: (eventId: string) => `/events/${eventId}`,
   eventEdit: (eventId: string) => `/events/${eventId}/edit`,
   eventConstructor: (eventId: string) => `/events/${eventId}/constructor`,
