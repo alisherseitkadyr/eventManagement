@@ -23,7 +23,10 @@ export async function fetchTemplates(
     )
   }
 
-  return data.map(({ schema, ...rest }) => rest)
+  // Optional cleanup
+return data.map(({ id, name, category, previewImage }) => ({
+  id, name, category, previewImage
+}));
 }
 
 export async function fetchTemplateById(
