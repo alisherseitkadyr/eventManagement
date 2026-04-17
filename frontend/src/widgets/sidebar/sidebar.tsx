@@ -24,7 +24,7 @@ function useEventId(): string | null {
 
 const GLOBAL_NAV: NavItem[] = [
   { id: 'templates',   icon: 'grid',  label: 'Templates',         href: '/templates' },
-  { id: 'invitations', icon: 'home',  label: 'My Invitations',    href: '/dashboard' },
+  { id: 'invitations', icon: 'home',  label: 'My Invitations',    href: '/my-events' },
   { id: 'create',      icon: 'plus',  label: 'Create Invitation', href: '/events/new' },
 ]
 

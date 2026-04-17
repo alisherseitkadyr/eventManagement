@@ -18,3 +18,5 @@ export {
   type LocalizedText,
   type TemplateStyle,
 } from '@entities/event/model/types'
+
+export type {MyEvent, EventFull, Guest, EventSettings} from '@entities/event/model/my-events'

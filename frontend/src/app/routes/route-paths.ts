@@ -5,6 +5,7 @@ export const routePaths = {
   signUp: '/sign-up',
   templates: '/templates',
   templatePreview: '/templates/:templateId',
+  myEvents: '/my-events',
   dashboard: '/dashboard',
   eventCreate: '/events/new',
   eventDetails: '/events/:eventId',

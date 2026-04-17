@@ -1,21 +1,15 @@
 import type { PropsWithChildren } from 'react'
-import { createContext, useEffect, useMemo, useState } from 'react'
-import type { SignInPayload, SignUpPayload, UserSession } from '@shared/api/auth'
-
-type AuthContextValue = {
-  isAuthenticated: boolean
-  isReady: boolean
-  session: UserSession | null
-  signIn: (payload: SignInPayload) => Promise<void>
-  signUp: (payload: SignUpPayload) => Promise<void>
-  signOut: () => void
-}
+import { useMemo, useState } from 'react'
+import type { UserSession } from '@shared/api/auth'
+import { AuthContext, type AuthContextValue } from '@app/providers/auth/auth-context'
 
 const AUTH_STORAGE_KEY = 'qonaq-session'
 
-export const AuthContext = createContext<AuthContextValue | null>(null)
-
 function readStoredSession(): UserSession | null {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
   const rawSession = window.localStorage.getItem(AUTH_STORAGE_KEY)
 
   if (!rawSession) {
@@ -30,13 +24,8 @@ function readStoredSession(): UserSession | null {
 }
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [session, setSession] = useState<UserSession | null>(null)
-  const [isReady, setIsReady] = useState(false)
-
-  useEffect(() => {
-    setSession(readStoredSession())
-    setIsReady(true)
-  }, [])
+  const [session, setSession] = useState<UserSession | null>(() => readStoredSession())
+  const isReady = true
 
   const value = useMemo<AuthContextValue>(
     () => ({

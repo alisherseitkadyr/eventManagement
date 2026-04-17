@@ -17,6 +17,7 @@ import { PublicInvitationPage } from '@pages/invitation-public'
 import { NotFoundPage } from '@pages/not-found'
 import { TemplatesPage } from '@/pages/templates'
 import { TemplatePreviewPage } from '@/pages/templateView'
+import { MyEventsPage } from '@/pages/my-events'
 
 export const appRouter = createBrowserRouter([
   {
@@ -53,6 +54,9 @@ export const appRouter = createBrowserRouter([
       {
         path: routePaths.templatePreview,
         element: <TemplatePreviewPage />,
+      },
+      { path: routePaths.myEvents,
+        element: <MyEventsPage />,
       },
       {
         path: routePaths.eventCreate,
