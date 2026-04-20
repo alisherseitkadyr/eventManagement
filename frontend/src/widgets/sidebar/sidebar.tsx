@@ -1,95 +1,138 @@
-import { Link, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import { routeBuilders, routePaths } from '@app/routes/route-paths'
 import { Icon, type IconName } from '@shared/ui/icon'
 import { LegacyAvatar } from '@shared/ui/legacy-ui'
-import styles from '@widgets/sidebar/sidebar.module.css'
+import type { SidebarMode } from './use-sidebar'
+import css from './sidebar.module.css'
 
 type NavItem = {
   id: string
   icon: IconName
   label: string
   href: string
+  exact?: boolean
 }
 
-type SidebarProps = {
+export type SidebarProps = {
+  mode: SidebarMode
+  onToggle: () => void
+  locked?: boolean
+  layout?: 'fixed' | 'grid'
+  eventId?: string | null
   mobileOpen?: boolean
-  onClose?: () => void
-}
-
-function useEventId(): string | null {
-  const { pathname } = useLocation()
-  const match = pathname.match(/^\/events\/([^/]+)/)
-  const id = match?.[1]
-  return id && id !== 'new' ? id : null
+  onMobileClose?: () => void
 }
 
 const GLOBAL_NAV: NavItem[] = [
-  { id: 'templates',   icon: 'grid',  label: 'Templates',         href: '/templates' },
-  { id: 'invitations', icon: 'home',  label: 'My Invitations',    href: '/my-events' },
-  { id: 'create',      icon: 'plus',  label: 'Create Invitation', href: '/events/new' },
+  { id: 'templates',   icon: 'grid',  label: 'Templates',         href: routePaths.templates },
+  { id: 'invitations', icon: 'home',  label: 'My Invitations',    href: routePaths.myEvents },
+  { id: 'create',      icon: 'plus',  label: 'Create Invitation', href: routePaths.eventCreate },
 ]
 
 function buildEventNav(eventId: string): NavItem[] {
   return [
-    { id: 'dashboard',   icon: 'home',  label: 'Dashboard',   href: `/events/${eventId}` },
-    { id: 'constructor', icon: 'edit',  label: 'Constructor', href: `/events/${eventId}/constructor` },
-    { id: 'guests',      icon: 'users', label: 'Guests',      href: `/events/${eventId}/guests` },
+    { id: 'dashboard',   icon: 'home',  label: 'Dashboard',   href: routeBuilders.eventDetails(eventId),    exact: true },
+    { id: 'constructor', icon: 'edit',  label: 'Constructor', href: routeBuilders.eventConstructor(eventId) },
+    { id: 'guests',      icon: 'users', label: 'Guests',      href: routeBuilders.eventGuests(eventId) },
   ]
 }
 
-export function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
-  const { pathname } = useLocation()
-  const eventId = useEventId()
-  const navItems = eventId ? buildEventNav(eventId) : GLOBAL_NAV
+function NavItem({ item, onClick }: { item: NavItem; onClick?: () => void }) {
+  return (
+    <NavLink
+      to={item.href}
+      end={item.exact}
+      onClick={onClick}
+      className={({ isActive }) =>
+        [css.navItem, isActive ? css.navItemActive : ''].filter(Boolean).join(' ')
+      }
+    >
+      <span className={css.navIcon}>
+        <Icon name={item.icon} size={18} color="currentColor" />
+      </span>
+      <span className={css.navLabel}>{item.label}</span>
+      <span className={css.navTooltip} aria-hidden="true">{item.label}</span>
+    </NavLink>
+  )
+}
 
-  const isActive = (href: string) => {
-    if (eventId && href === `/events/${eventId}`) return pathname === href
-    if (href === '/dashboard') return pathname === '/dashboard'
-    return pathname.startsWith(href)
-  }
+export function Sidebar({
+  mode,
+  onToggle,
+  locked = false,
+  layout = 'fixed',
+  eventId = null,
+  mobileOpen = false,
+  onMobileClose,
+}: SidebarProps) {
+  const eventNav = eventId ? buildEventNav(eventId) : null
+
+  const classes = [
+    css.sidebar,
+    mode === 'rail' ? css.rail : '',
+    layout === 'grid' ? css.sidebarGrid : '',
+    mobileOpen ? css.mobileOpen : '',
+  ].filter(Boolean).join(' ')
 
   return (
-    <aside className={`${styles.sidebar} ${mobileOpen ? styles.open : ''}`}>
-      <div className={styles.logoArea}>
-        <Link to="/dashboard" className={styles.logo} onClick={onClose}>
-          Qona<span className={styles.logoAccent}>q</span>
-        </Link>
-        <div className={styles.logoSub}>Панель организатора</div>
+    <aside className={classes}>
+      <div className={css.header}>
+        <NavLink to={routePaths.myEvents} className={css.logo} onClick={onMobileClose}>
+          <span className={css.logoFull}>
+            Qona<span className={css.logoAccent}>q</span>
+          </span>
+          <span className={css.logoRail}>Q</span>
+        </NavLink>
+        {!locked && (
+          <button
+            type="button"
+            className={css.toggleBtn}
+            onClick={onToggle}
+            aria-label={mode === 'full' ? 'Collapse sidebar' : 'Expand sidebar'}
+          >
+            <Icon
+              name={mode === 'full' ? 'chevron-left' : 'chevron-right'}
+              size={14}
+              color="currentColor"
+            />
+          </button>
+        )}
       </div>
 
-      <div className={styles.scrollableMiddle}>
-        {eventId && (
-          <div className={styles.backArea}>
-            <Link to="/dashboard" className={styles.backLink} onClick={onClose}>
-              <Icon name="chevron-left" size={14} color="currentColor" />
-              <span>My Invitations</span>
-            </Link>
-            <div className={styles.sectionLabel}>This Invitation</div>
-          </div>
-        )}
-
-        <nav className={styles.nav}>
-          {navItems.map((item) => (
-            <Link
-              key={item.id}
-              to={item.href}
-              onClick={onClose}
-              className={`${styles.navItem} ${isActive(item.href) ? styles.active : ''}`}
-            >
-              <Icon name={item.icon} size={18} color="currentColor" />
-              <span>{item.label}</span>
-            </Link>
+      <div className={css.body}>
+        <nav className={css.nav}>
+          {GLOBAL_NAV.map((item) => (
+            <NavItem key={item.id} item={item} onClick={onMobileClose} />
           ))}
         </nav>
+
+        {eventNav && (
+          <>
+            <div className={css.divider} />
+            <div className={css.sectionLabel}>This Invitation</div>
+            <nav className={css.nav}>
+              {eventNav.map((item) => (
+                <NavItem key={item.id} item={item} onClick={onMobileClose} />
+              ))}
+            </nav>
+          </>
+        )}
       </div>
 
-      <div className={styles.userArea}>
-        <LegacyAvatar name="Айгерим" size={32} gradient={['var(--gold)', 'var(--terra)']} />
-        <div className={styles.userInfo}>
-          <div className={styles.userName}>Айгерим К.</div>
-          <div className={styles.userRole}>Организатор</div>
+      <div className={css.spacer} />
+
+      <div className={css.footer}>
+        <LegacyAvatar
+          name="Айгерим"
+          size={32}
+          gradient={['#C9A96E', '#7A2E3A']}
+        />
+        <div className={css.userInfo}>
+          <div className={css.userName}>Айгерим К.</div>
+          <div className={css.userRole}>Организатор</div>
         </div>
-        <button className={styles.settingsBtn} type="button" aria-label="Settings">
-          <Icon name="settings" size={16} color="var(--warm-gray)" />
+        <button type="button" className={css.settingsBtn} aria-label="Settings">
+          <Icon name="settings" size={15} color="currentColor" />
         </button>
       </div>
     </aside>

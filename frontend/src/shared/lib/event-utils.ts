@@ -80,7 +80,3 @@ export const stageGradients = [
   'from-amber-400 to-orange-500',
   'from-fuchsia-500 to-rose-500',
 ]
-
-export function getLeadStage(event: Event, visibleStages?: EventStage[]) {
-  return visibleStages?.[0] ?? event.stages[0]
-}

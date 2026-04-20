@@ -1,5 +1,5 @@
-import type { Event, EventStage } from '@entities/event/model/types'
-import type { Guest, RsvpStatus } from '@entities/guest/model/types'
+import type { Event, EventStage } from '@entities/event'
+import type { Guest, RsvpStatus } from '@entities/guest'
 
 export type RsvpResponse = {
   guestId: string

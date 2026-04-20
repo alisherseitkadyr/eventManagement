@@ -1,162 +1,351 @@
+/* ── Design tokens (warm defaults; constructor shell overrides these) ── */
+
 .sidebar {
-  width: 260px;
-  background: var(--white);
-  border-right: 1px solid var(--sand);
-  height: 100vh;
+  --sb-bg: #ffffff;
+  --sb-border: #e8ddd0;
+  --sb-logo: #7a2e3a;
+  --sb-logo-accent: #c9a96e;
+  --sb-text: #4a4541;
+  --sb-muted: #9c9186;
+  --sb-active-bg: rgba(201, 169, 110, 0.10);
+  --sb-active: #7a2e3a;
+  --sb-hover-bg: rgba(201, 169, 110, 0.06);
+  --sb-hover: #7a2e3a;
+  --sb-bar: #7a2e3a;
+  --sb-tooltip-bg: #2c2825;
+
   position: fixed;
   left: 0;
   top: 0;
+  height: 100vh;
+  width: 240px;
+  background: var(--sb-bg);
+  border-right: 1px solid var(--sb-border);
   display: flex;
   flex-direction: column;
   z-index: 50;
-  transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  transition:
+    width 250ms ease-out,
+    transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (max-width: 900px) {
+/* Grid layout mode (constructor) — non-fixed, sized by grid column */
+.sidebarGrid {
+  position: relative;
+  height: 100%;
+  width: 60px;
+  flex-shrink: 0;
+  transition: none;
+}
+
+/* Rail mode */
+.sidebar.rail {
+  width: 60px;
+}
+
+/* Mobile: always full width, slides in from left */
+@media (max-width: 639px) {
   .sidebar {
     transform: translateX(-100%);
+    width: 240px !important;
   }
 
-  .open {
+  .sidebar.mobileOpen {
     transform: translateX(0);
   }
 }
 
-.logoArea {
-  padding: 1.5rem 1.5rem 1.75rem;
-  border-bottom: 1px solid var(--sand);
+/* ── Header ─────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 1.1rem 0.85rem 1rem;
+  border-bottom: 0.5px solid var(--sb-border);
+  flex-shrink: 0;
+  min-height: 58px;
+  overflow: hidden;
+}
+
+.sidebar.rail .header {
+  justify-content: center;
+  padding: 1.1rem 0 1rem;
 }
 
 .logo {
-  font-family: var(--font-display);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.logoFull {
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
   font-size: 22px;
   font-weight: 600;
-  color: var(--burgundy);
-  text-decoration: none;
+  color: var(--sb-logo);
+  white-space: nowrap;
+}
+
+.sidebar.rail .logoFull {
+  display: none;
 }
 
 .logoAccent {
-  color: var(--gold);
+  color: var(--sb-logo-accent);
 }
 
-.logoSub {
-  font-size: 11px;
-  color: var(--warm-gray);
-  margin-top: 4px;
-  letter-spacing: 0.03em;
+.logoRail {
+  display: none;
+  font-family: var(--font-display, 'Cormorant Garamond', serif);
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--sb-logo);
 }
 
-.backArea {
-  padding: 1rem 1rem 0.25rem;
+.sidebar.rail .logoRail {
+  display: block;
 }
 
-.backLink {
-  display: inline-flex;
+.toggleBtn {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--sb-muted);
+  display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  color: var(--warm-gray);
-  text-decoration: none;
-  transition: color 150ms;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
 }
 
-.backLink:hover {
-  color: var(--burgundy);
+.toggleBtn:hover {
+  background: var(--sb-hover-bg);
+  color: var(--sb-hover);
 }
 
-.sectionLabel {
-  margin-top: 0.75rem;
-  padding: 0 0.25rem;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--warm-gray);
-}
+/* ── Body ───────────────────────────────────────────────── */
 
-.scrollableMiddle {
-  flex: 1;
+.body {
   overflow-y: auto;
   overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
+  padding: 0.5rem 0;
   scrollbar-width: thin;
-  scrollbar-color: var(--sand) transparent;
+  scrollbar-color: var(--sb-border) transparent;
 }
 
-.scrollableMiddle::-webkit-scrollbar {
+.body::-webkit-scrollbar {
   width: 4px;
 }
 
-.scrollableMiddle::-webkit-scrollbar-thumb {
-  background: var(--sand);
+.body::-webkit-scrollbar-thumb {
+  background: var(--sb-border);
   border-radius: 4px;
 }
 
+/* ── Nav section ────────────────────────────────────────── */
+
 .nav {
-  flex: 1;
-  padding: 0.75rem;
+  padding: 0.25rem 0.625rem;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
+.sidebar.rail .nav {
+  padding: 0.25rem 0;
+  align-items: center;
+}
+
+/* ── Nav item ───────────────────────────────────────────── */
+
 .navItem {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0.6rem 0.85rem;
+  padding: 10px 12px;
   border-radius: 10px;
   font-size: 13.5px;
   font-weight: 400;
-  color: var(--charcoal-soft);
+  color: var(--sb-text);
   text-decoration: none;
-  transition: all 200ms;
+  transition: background 150ms, color 150ms;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .navItem:hover {
-  background: var(--gold-faint);
-  color: var(--burgundy);
+  background: var(--sb-hover-bg);
+  color: var(--sb-hover);
 }
 
-.active {
-  background: var(--gold-faint);
-  color: var(--burgundy);
+.navItemActive {
+  background: var(--sb-active-bg);
+  color: var(--sb-active);
   font-weight: 500;
 }
 
-.userArea {
-  padding: 1rem 1.25rem;
-  border-top: 1px solid var(--sand);
+.navItemActive::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 18px;
+  background: var(--sb-bar);
+  border-radius: 0 2px 2px 0;
+}
+
+/* Rail nav item */
+.sidebar.rail .navItem {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 10px;
+  overflow: visible;
+}
+
+.navIcon {
+  flex-shrink: 0;
+  display: flex;
+}
+
+.navLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar.rail .navLabel {
+  display: none;
+}
+
+/* ── Tooltip (rail only) ────────────────────────────────── */
+
+.navTooltip {
+  display: none;
+}
+
+.sidebar.rail .navTooltip {
+  display: block;
+  position: absolute;
+  left: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: var(--sb-tooltip-bg);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+  z-index: 100;
+}
+
+.sidebar.rail .navItem:hover .navTooltip {
+  opacity: 1;
+}
+
+/* ── Section divider ────────────────────────────────────── */
+
+.divider {
+  height: 0.5px;
+  background: var(--sb-border);
+  margin: 0.5rem 0.625rem;
+}
+
+.sectionLabel {
+  padding: 0.25rem 1rem 0.375rem;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sb-muted);
+}
+
+.sidebar.rail .sectionLabel {
+  display: none;
+}
+
+/* ── Spacer ─────────────────────────────────────────────── */
+
+.spacer {
+  flex: 1;
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+
+.footer {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 0.85rem 1rem;
+  border-top: 0.5px solid var(--sb-border);
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: padding 250ms ease-out;
+}
+
+.sidebar.rail .footer {
+  justify-content: center;
+  padding: 0.85rem 0;
 }
 
 .userInfo {
   flex: 1;
+  min-width: 0;
+}
+
+.sidebar.rail .userInfo {
+  display: none;
 }
 
 .userName {
   font-size: 13px;
   font-weight: 500;
-  color: var(--charcoal);
+  color: var(--sb-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .userRole {
   font-size: 11px;
-  color: var(--warm-gray);
+  color: var(--sb-muted);
 }
 
 .settingsBtn {
+  flex-shrink: 0;
   background: none;
   border: none;
   cursor: pointer;
   padding: 4px;
   border-radius: 6px;
-  transition: background 200ms;
+  color: var(--sb-muted);
+  transition: background 150ms, color 150ms;
 }
 
 .settingsBtn:hover {
-  background: var(--ivory);
+  background: var(--sb-hover-bg);
+  color: var(--sb-hover);
+}
+
+.sidebar.rail .settingsBtn {
+  display: none;
 }

@@ -1,0 +1,92 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: rgba(251, 248, 242, 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.group { display: flex; align-items: center; gap: 10px; }
+
+/* ── Device switcher ────────────────────────────────── */
+.deviceSwitcher {
+  display: flex;
+  background: var(--bg-input);
+  border-radius: var(--r-sm);
+  padding: 2px;
+  gap: 2px;
+}
+
+.deviceBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--f-body);
+}
+
+.deviceBtn svg { width: 12px; height: 12px; }
+
+.deviceBtnActive {
+  background: #fff;
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+  font-weight: 600;
+}
+
+/* ── Canvas meta ────────────────────────────────────── */
+.meta {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.status {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+/* ── Palette dots ───────────────────────────────────── */
+.paletteSwitcher { display: flex; align-items: center; gap: 6px; }
+
+.paletteLabel {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.15s;
+  position: relative;
+  flex-shrink: 0;
+  border: none;
+}
+
+.dot:hover { transform: scale(1.15); }
+
+.dotActive::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 1.5px solid var(--text);
+  border-radius: 50%;
+}

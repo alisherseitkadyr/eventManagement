@@ -5,11 +5,9 @@ import { routeBuilders, routePaths } from '@app/routes/route-paths'
 import type { Event } from '@entities/event'
 import { getEvents } from '@shared/api/events'
 import { formatEventDate, getLocalizedText } from '@shared/lib/event-utils'
-import { legacyBackground, legacyThemeVars } from '@shared/lib/legacy-theme'
+import { legacyBackground } from '@shared/lib/legacy-theme'
 import { Button, Card, EmptyState, Input, Loader, PageHeader } from '@shared/ui'
 import { Icon } from '@shared/ui/icon'
-import { Sidebar } from '@widgets/sidebar'
-import layoutStyles from '@app/layouts/dashboard-layout.module.css'
 
 type PublicationFilter = 'all' | 'published' | 'draft'
 
@@ -24,16 +22,12 @@ function getLeadDate(event: Event) {
 }
 
 function matchesFilter(event: Event, filter: PublicationFilter) {
-  if (filter === 'all') {
-    return true
-  }
-
+  if (filter === 'all') return true
   return filter === 'published' ? event.published : !event.published
 }
 
 export function MyEventsPage() {
   const navigate = useNavigate()
-  const [mobileOpen, setMobileOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<PublicationFilter>('all')
   const deferredSearch = useDeferredValue(search)
@@ -45,13 +39,8 @@ export function MyEventsPage() {
 
   const normalizedSearch = deferredSearch.trim().toLowerCase()
   const filteredEvents = events.filter((event) => {
-    if (!matchesFilter(event, filter)) {
-      return false
-    }
-
-    if (!normalizedSearch) {
-      return true
-    }
+    if (!matchesFilter(event, filter)) return false
+    if (!normalizedSearch) return true
 
     const haystack = [
       getLocalizedText(event.title, 'ru'),
@@ -66,217 +55,175 @@ export function MyEventsPage() {
   })
 
   return (
-    <div className={layoutStyles.shell} style={legacyThemeVars}>
-      <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+    <main
+      className="min-h-screen space-y-6 p-5 md:p-8"
+      style={{ background: legacyBackground, fontFamily: 'var(--font-body)' }}
+    >
+      <PageHeader
+        eyebrow="Organizer"
+        title="My invitations"
+        description="Review every event, jump back into editing, and keep draft invitations moving toward publish."
+        action={
+          <Button onClick={() => navigate(routePaths.eventCreate)}>
+            <span className="inline-flex items-center gap-2">
+              <Icon name="plus" size={16} color="currentColor" />
+              <span>Create invitation</span>
+            </span>
+          </Button>
+        }
+      />
 
-      {mobileOpen ? (
-        <button
-          type="button"
-          className={layoutStyles.overlay}
-          aria-label="Close menu"
-          onClick={() => setMobileOpen(false)}
-        />
-      ) : null}
+      <Card className="space-y-4">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-[var(--color-text)]">Search invitations</p>
+            <Input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search by title, host, or place"
+            />
+          </div>
 
-      <div className={layoutStyles.mainArea}>
-        <div className={layoutStyles.mobileBar}>
-          <button
-            type="button"
-            className={layoutStyles.mobileMenuButton}
-            aria-label="Open menu"
-            onClick={() => setMobileOpen(true)}
-          >
-            <Icon name="menu" size={20} color="currentColor" />
-          </button>
-          <div className={layoutStyles.mobileEventMeta}>
-            <div className={layoutStyles.mobileEventTitle}>My invitations</div>
-            <div className={layoutStyles.mobileEventDate}>
-              {events.length} {events.length === 1 ? 'event' : 'events'}
-            </div>
+          <div className="flex flex-wrap gap-2">
+            {filters.map((item) => (
+              <Button
+                key={item.id}
+                variant={filter === item.id ? 'primary' : 'secondary'}
+                onClick={() => setFilter(item.id)}
+              >
+                {item.label}
+              </Button>
+            ))}
           </div>
         </div>
+      </Card>
 
-        <main
-          className="min-h-screen space-y-6 p-5 md:p-8"
-          style={{
-            background: legacyBackground,
-            fontFamily: 'var(--font-body)',
-          }}
-        >
-          <PageHeader
-            eyebrow="Organizer"
-            title="My invitations"
-            description="Review every event, jump back into editing, and keep draft invitations moving toward publish."
-            action={
-              <Button onClick={() => navigate(routePaths.eventCreate)}>
-                <span className="inline-flex items-center gap-2">
-                  <Icon name="plus" size={16} color="currentColor" />
-                  <span>Create invitation</span>
-                </span>
-              </Button>
+      {isLoading ? (
+        <Card className="flex min-h-40 items-center justify-center">
+          <Loader label="Loading invitations..." />
+        </Card>
+      ) : error ? (
+        <Card className="space-y-3">
+          <h2 className="text-xl font-semibold text-[var(--color-text)]">
+            Invitations could not be loaded
+          </h2>
+          <p className="text-sm leading-6 text-[var(--color-muted)]">
+            {error instanceof Error
+              ? error.message
+              : 'Something went wrong while loading your events.'}
+          </p>
+        </Card>
+      ) : filteredEvents.length === 0 ? (
+        <EmptyState
+          title={events.length === 0 ? 'No invitations yet' : 'No invitations match these filters'}
+          description={
+            events.length === 0
+              ? 'Create your first invitation to start customizing stages, guests, and sending flows.'
+              : 'Try a different search or switch back to all invitations to see your full list again.'
+          }
+          actionLabel={events.length === 0 ? 'Create invitation' : 'Reset filters'}
+          onAction={() => {
+            if (events.length === 0) {
+              navigate(routePaths.eventCreate)
+              return
             }
-          />
+            setSearch('')
+            setFilter('all')
+          }}
+        />
+      ) : (
+        <section className="grid gap-4 xl:grid-cols-2">
+          {filteredEvents.map((event) => {
+            const eventTitle = getLocalizedText(event.title, 'ru')
+            const leadStage = event.stages[0]
+            const eventDate = formatEventDate(getLeadDate(event), 'ru')
 
-          <Card className="space-y-4">
-            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-[var(--color-text)]">Search invitations</p>
-                <Input
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Search by title, host, or place"
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {filters.map((item) => (
-                  <Button
-                    key={item.id}
-                    variant={filter === item.id ? 'primary' : 'secondary'}
-                    onClick={() => setFilter(item.id)}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          </Card>
-
-          {isLoading ? (
-            <Card className="flex min-h-40 items-center justify-center">
-              <Loader label="Loading invitations..." />
-            </Card>
-          ) : error ? (
-            <Card className="space-y-3">
-              <h2 className="text-xl font-semibold text-[var(--color-text)]">
-                Invitations could not be loaded
-              </h2>
-              <p className="text-sm leading-6 text-[var(--color-muted)]">
-                {error instanceof Error
-                  ? error.message
-                  : 'Something went wrong while loading your events.'}
-              </p>
-            </Card>
-          ) : filteredEvents.length === 0 ? (
-            <EmptyState
-              title={events.length === 0 ? 'No invitations yet' : 'No invitations match these filters'}
-              description={
-                events.length === 0
-                  ? 'Create your first invitation to start customizing stages, guests, and sending flows.'
-                  : 'Try a different search or switch back to all invitations to see your full list again.'
-              }
-              actionLabel={events.length === 0 ? 'Create invitation' : 'Reset filters'}
-              onAction={() => {
-                if (events.length === 0) {
-                  navigate(routePaths.eventCreate)
-                  return
-                }
-
-                setSearch('')
-                setFilter('all')
-              }}
-            />
-          ) : (
-            <section className="grid gap-4 xl:grid-cols-2">
-              {filteredEvents.map((event) => {
-                const eventTitle = getLocalizedText(event.title, 'ru')
-                const leadStage = event.stages[0]
-                const eventDate = formatEventDate(getLeadDate(event), 'ru')
-
-                return (
-                  <Card
-                    key={event.id}
-                    className="space-y-5 border border-white/60 bg-white/80 backdrop-blur"
-                  >
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div className="space-y-2">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span
-                            className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-                              event.published
-                                ? 'bg-emerald-100 text-emerald-700'
-                                : 'bg-amber-100 text-amber-700'
-                            }`}
-                          >
-                            {event.published ? 'Published' : 'Draft'}
-                          </span>
-                          <span className="inline-flex rounded-full bg-[var(--color-surface-muted)] px-3 py-1 text-xs font-medium text-[var(--color-muted)]">
-                            {event.languages.join(' / ').toUpperCase()}
-                          </span>
-                        </div>
-
-                        <div className="space-y-1">
-                          <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-text)]">
-                            {eventTitle}
-                          </h2>
-                          <p className="text-sm text-[var(--color-muted)]">
-                            Coordinator: {event.coordinatorName}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div
-                        className="h-12 w-12 rounded-2xl"
-                        style={{
-                          background: `linear-gradient(135deg, ${event.accentColor}, rgba(255,255,255,0.96))`,
-                        }}
-                      />
-                    </div>
-
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      <div className="rounded-2xl bg-[var(--color-surface-muted)] p-4">
-                        <div className="mb-2 flex items-center gap-2 text-[var(--color-muted)]">
-                          <Icon name="calendar" size={16} color="currentColor" />
-                          <span className="text-xs font-medium uppercase tracking-[0.18em]">
-                            Date
-                          </span>
-                        </div>
-                        <p className="text-sm font-medium text-[var(--color-text)]">{eventDate}</p>
-                      </div>
-
-                      <div className="rounded-2xl bg-[var(--color-surface-muted)] p-4">
-                        <div className="mb-2 flex items-center gap-2 text-[var(--color-muted)]">
-                          <Icon name="map" size={16} color="currentColor" />
-                          <span className="text-xs font-medium uppercase tracking-[0.18em]">
-                            Place
-                          </span>
-                        </div>
-                        <p className="text-sm font-medium text-[var(--color-text)]">
-                          {leadStage?.place ?? 'Not set yet'}
-                        </p>
-                      </div>
-
-                      <div className="rounded-2xl bg-[var(--color-surface-muted)] p-4">
-                        <div className="mb-2 flex items-center gap-2 text-[var(--color-muted)]">
-                          <Icon name="list" size={16} color="currentColor" />
-                          <span className="text-xs font-medium uppercase tracking-[0.18em]">
-                            Stages
-                          </span>
-                        </div>
-                        <p className="text-sm font-medium text-[var(--color-text)]">
-                          {event.stages.length} {event.stages.length === 1 ? 'stage' : 'stages'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-3">
-                      <Button onClick={() => navigate(routeBuilders.eventDetails(event.id))}>
-                        Open dashboard
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        onClick={() => navigate(routeBuilders.eventConstructor(event.id))}
+            return (
+              <Card
+                key={event.id}
+                className="space-y-5 border border-white/60 bg-white/80 backdrop-blur"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
+                          event.published
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : 'bg-amber-100 text-amber-700'
+                        }`}
                       >
-                        Continue editing
-                      </Button>
+                        {event.published ? 'Published' : 'Draft'}
+                      </span>
+                      <span className="inline-flex rounded-full bg-[var(--color-surface-muted)] px-3 py-1 text-xs font-medium text-[var(--color-muted)]">
+                        {event.languages.join(' / ').toUpperCase()}
+                      </span>
                     </div>
-                  </Card>
-                )
-              })}
-            </section>
-          )}
-        </main>
-      </div>
-    </div>
+
+                    <div className="space-y-1">
+                      <h2 className="text-2xl font-semibold tracking-tight text-[var(--color-text)]">
+                        {eventTitle}
+                      </h2>
+                      <p className="text-sm text-[var(--color-muted)]">
+                        Coordinator: {event.coordinatorName}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    className="h-12 w-12 rounded-2xl"
+                    style={{
+                      background: `linear-gradient(135deg, ${event.accentColor}, rgba(255,255,255,0.96))`,
+                    }}
+                  />
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-2xl bg-[var(--color-surface-muted)] p-4">
+                    <div className="mb-2 flex items-center gap-2 text-[var(--color-muted)]">
+                      <Icon name="calendar" size={16} color="currentColor" />
+                      <span className="text-xs font-medium uppercase tracking-[0.18em]">Date</span>
+                    </div>
+                    <p className="text-sm font-medium text-[var(--color-text)]">{eventDate}</p>
+                  </div>
+
+                  <div className="rounded-2xl bg-[var(--color-surface-muted)] p-4">
+                    <div className="mb-2 flex items-center gap-2 text-[var(--color-muted)]">
+                      <Icon name="map" size={16} color="currentColor" />
+                      <span className="text-xs font-medium uppercase tracking-[0.18em]">Place</span>
+                    </div>
+                    <p className="text-sm font-medium text-[var(--color-text)]">
+                      {leadStage?.place ?? 'Not set yet'}
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-[var(--color-surface-muted)] p-4">
+                    <div className="mb-2 flex items-center gap-2 text-[var(--color-muted)]">
+                      <Icon name="list" size={16} color="currentColor" />
+                      <span className="text-xs font-medium uppercase tracking-[0.18em]">Stages</span>
+                    </div>
+                    <p className="text-sm font-medium text-[var(--color-text)]">
+                      {event.stages.length} {event.stages.length === 1 ? 'stage' : 'stages'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <Button onClick={() => navigate(routeBuilders.eventDetails(event.id))}>
+                    Open dashboard
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => navigate(routeBuilders.eventConstructor(event.id))}
+                  >
+                    Continue editing
+                  </Button>
+                </div>
+              </Card>
+            )
+          })}
+        </section>
+      )}
+    </main>
   )
 }

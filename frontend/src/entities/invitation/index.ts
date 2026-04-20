@@ -1,5 +1,3 @@
-export type {
-  InvitationPayload,
-  RsvpResponse,
-  RsvpSubmitInput,
-} from '@entities/invitation/model/types'
+export * from './model/types';
+export * from './model/block-types';
+export * from './model/block-defaults';

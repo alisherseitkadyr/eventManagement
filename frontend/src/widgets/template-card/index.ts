@@ -1,1 +1,0 @@
-export  {TemplateCard} from '@widgets/template-card/template-card'

@@ -1,18 +1,16 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Download, Plus, Send } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { routeBuilders } from '@app/routes/route-paths'
 import type { Guest } from '@entities/guest'
 import { rsvpStatusLabels } from '@entities/guest'
-import { getEvent, getEventStats, getEvents } from '@shared/api/events'
+import { getEvent, getEventStats } from '@shared/api/events'
 import { getEventGuests } from '@shared/api/guests'
 import { formatEventDate, getLocalizedText } from '@shared/lib/event-utils'
 
 type EventDashboardShellProps = {
   eventId: string
-  showEventPicker?: boolean
 }
 
 function pluralizeRu(value: number, one: string, few: string, many: string) {
@@ -137,10 +135,7 @@ function StatusBadge({ status }: { status: Guest['status'] }) {
   )
 }
 
-export function EventDashboardShell({
-  eventId,
-  showEventPicker = false,
-}: EventDashboardShellProps) {
+export function EventDashboardShell({ eventId }: EventDashboardShellProps) {
   const { data: event } = useQuery({
     queryKey: ['dashboard-event', eventId],
     queryFn: () => getEvent(eventId),
@@ -156,12 +151,6 @@ export function EventDashboardShell({
     queryFn: () => getEventGuests(eventId),
     enabled: Boolean(eventId),
   })
-  const { data: events = [] } = useQuery({
-    queryKey: ['dashboard-events-picker'],
-    queryFn: getEvents,
-    enabled: showEventPicker,
-  })
-
   const recent = useMemo(() => recentResponses(guests), [guests])
 
   if (!event || !stats) {
@@ -231,33 +220,6 @@ export function EventDashboardShell({
         borderRadius: 28,
       }}
     >
-      {showEventPicker && events.length > 1 ? (
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: '1.25rem' }}>
-          {events.map((candidate) => {
-            const active = candidate.id === event.id
-            return (
-              <Link
-                key={candidate.id}
-                style={{
-                  padding: '0.5rem 0.9rem',
-                  borderRadius: 100,
-                  border: active ? '1.5px solid var(--burgundy)' : '1.5px solid var(--sand)',
-                  background: active ? 'var(--burgundy)' : 'rgba(255,255,255,0.7)',
-                  color: active ? 'var(--white)' : 'var(--charcoal)',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                  fontFamily: 'var(--font-body)',
-                }}
-                to={routeBuilders.eventDetails(candidate.id)}
-              >
-                {getLocalizedText(candidate.title, 'ru')}
-              </Link>
-            )
-          })}
-        </div>
-      ) : null}
-
       <div
         style={{
           display: 'flex',
@@ -285,16 +247,6 @@ export function EventDashboardShell({
             {formatEventDate(event.stages[0]?.date ?? event.createdAt, 'ru')} · {event.stages.length} этапа ·{' '}
             {event.stages[0]?.place ?? 'Казахстан'}
           </p>
-        </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <Link style={linkButtonStyle('ghost')} to={routeBuilders.eventSending(event.id)}>
-            <Download className="size-4" />
-            Экспорт
-          </Link>
-          <Link style={linkButtonStyle('primary')} to={routeBuilders.eventSending(event.id)}>
-            <Send className="size-4" />
-            Разослать
-          </Link>
         </div>
       </div>
 
@@ -490,28 +442,6 @@ export function EventDashboardShell({
             ))}
           </div>
 
-          <Link
-            style={{
-              width: '100%',
-              justifyContent: 'center',
-              marginTop: 14,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '0.55rem 1rem',
-              borderRadius: 100,
-              background: 'var(--gold-faint)',
-              color: 'var(--burgundy)',
-              fontSize: 13,
-              fontWeight: 600,
-              textDecoration: 'none',
-              fontFamily: 'var(--font-body)',
-            }}
-            to={routeBuilders.eventStages(event.id)}
-          >
-            <Plus className="size-4" />
-            Добавить этап
-          </Link>
         </DashboardCard>
       </div>
 

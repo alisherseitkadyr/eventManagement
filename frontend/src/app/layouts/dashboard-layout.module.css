@@ -7,14 +7,23 @@
   font-family: var(--font-body);
 }
 
+/* ── Main area offset (mirrors sidebar width) ────────────── */
+
 .mainArea {
   min-height: 100vh;
-  margin-left: 260px;
+  margin-left: 240px;
+  transition: margin-left 250ms ease-out;
+}
+
+.mainAreaRail {
+  margin-left: 60px;
 }
 
 .main {
   min-height: 100vh;
 }
+
+/* ── Mobile bar (hidden on desktop) ─────────────────────── */
 
 .mobileBar {
   display: none;
@@ -32,6 +41,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 12px 30px rgba(44, 40, 37, 0.08);
+  flex-shrink: 0;
 }
 
 .mobileEventMeta {
@@ -53,13 +63,19 @@
   margin-top: 2px;
 }
 
+/* ── Mobile overlay ──────────────────────────────────────── */
+
 .overlay {
   display: none;
 }
 
-@media (max-width: 900px) {
-  .mainArea {
+/* ── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+  .mainArea,
+  .mainAreaRail {
     margin-left: 0;
+    transition: none;
   }
 
   .mobileBar {

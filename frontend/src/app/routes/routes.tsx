@@ -5,15 +5,10 @@ import { ProtectedRoute } from '@app/providers/auth/protected-route'
 import { routePaths } from '@app/routes/route-paths'
 import { LandingPage } from '@pages/landing'
 import { SignInPage, SignUpPage } from '@pages/auth'
-import { DashboardPage } from '@pages/dashboard'
 import { CreateEventPage } from '@pages/event-create'
 import { EventConstructorPage } from '@pages/event-constructor'
-import { EventDetailsPage, EventEditPage } from '@pages/event-edit'
+import { EventDetailsPage } from '@/pages/event-details'
 import { EventGuestsPage } from '@pages/event-guests'
-import { EventStagesPage } from '@pages/event-stages'
-import { EventPreviewPage } from '@pages/event-preview'
-import { EventSendingPage } from '@pages/event-sending'
-import { PublicInvitationPage } from '@pages/invitation-public'
 import { NotFoundPage } from '@pages/not-found'
 import { TemplatesPage } from '@/pages/templates'
 import { TemplatePreviewPage } from '@/pages/templateView'
@@ -23,82 +18,30 @@ export const appRouter = createBrowserRouter([
   {
     element: <PublicLayout />,
     children: [
-      {
-        path: routePaths.landing,
-        element: <LandingPage />,
-      },
-      {
-        path: routePaths.signIn,
-        element: <SignInPage />,
-      },
-      {
-        path: routePaths.signUp,
-        element: <SignUpPage />,
-      },
-      {
-        path: routePaths.invitationPublic,
-        element: <PublicInvitationPage />,
-      },
-      {
-        path: routePaths.notFound,
-        element: <NotFoundPage />,
-      },
+      { path: routePaths.landing,  element: <LandingPage /> },
+      { path: routePaths.signIn,   element: <SignInPage /> },
+      { path: routePaths.signUp,   element: <SignUpPage /> },
+      { path: routePaths.notFound, element: <NotFoundPage /> },
     ],
   },
   {
     element: <ProtectedRoute />,
     children: [
-      { path: routePaths.templates,
-        element: <TemplatesPage />,
-      },
-      {
-        path: routePaths.templatePreview,
-        element: <TemplatePreviewPage />,
-      },
-      { path: routePaths.myEvents,
-        element: <MyEventsPage />,
-      },
-      {
-        path: routePaths.eventCreate,
-        element: <CreateEventPage />,
-      },
       {
         element: <DashboardLayout />,
         children: [
-          {
-            path: routePaths.dashboard,
-            element: <DashboardPage />,
-          },
-          {
-            path: routePaths.eventDetails,
-            element: <EventDetailsPage />,
-          },
-          {
-            path: routePaths.eventEdit,
-            element: <EventEditPage />,
-          },
-          {
-            path: routePaths.eventConstructor,
-            element: <EventConstructorPage />,
-          },
-          {
-            path: routePaths.eventGuests,
-            element: <EventGuestsPage />,
-          },
-          {
-            path: routePaths.eventStages,
-            element: <EventStagesPage />,
-          },
-          {
-            path: routePaths.eventPreview,
-            element: <EventPreviewPage />,
-          },
-          {
-            path: routePaths.eventSending,
-            element: <EventSendingPage />,
-          },
+          { path: routePaths.dashboard,     element: <Navigate replace to={routePaths.myEvents} /> },
+          { path: routePaths.templates,     element: <TemplatesPage /> },
+          { path: routePaths.myEvents,      element: <MyEventsPage /> },
+          { path: routePaths.eventCreate,   element: <CreateEventPage /> },
+          { path: routePaths.eventDetails,  element: <EventDetailsPage /> },
+          { path: routePaths.eventGuests,   element: <EventGuestsPage /> },
         ],
       },
+      // Constructor has its own shell with built-in rail sidebar
+      { path: routePaths.eventConstructor,  element: <EventConstructorPage /> },
+      // Template preview is a standalone full-screen page
+      { path: routePaths.templatePreview,   element: <TemplatePreviewPage /> },
     ],
   },
   {
